@@ -6,21 +6,27 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --gres=gpu:1
 #SBATCH --partition=gpu
-#SBATCH --time=01:00:00
+#SBATCH --time=02:00:00
 
-# Activate the gridware environment and load necessary modules
+# Load necessary modules
 flight env activate gridware
-module load apps/nvidia-cuda/12.3.2
 module load apps/anaconda3/2023.03
+module load apps/nvidia-cuda/12.3.2
 
-# Activate your conda environment
-source activate llavamed
+# Activate the conda environment
+conda activate llavamed
 
-# Run the LLaVA-Med model worker
-python -m llava.serve.model_worker --host 0.0.0.0 --controller http://localhost:10000 --port 40000 --worker http://localhost:40000 --model-path microsoft/llava-med-v1.5-mistral-7b --multi-modal
+# Change to the LLaVA-Med directory
+cd ~/LLaVA-Med
 
-# (Optional) Run a test message if needed
-# python -m llava.serve.test_message --model-name llava-med-v1.5-mistral-7b --controller http://localhost:10000
+# Run the test script
+python llava/eval/model_vqa.py --conv-mode mistral_instruct \
+    --model-path microsoft/llava-med-v1.5-mistral-7b \
+    --question-file data/eval/llava_med_eval_qa50_qa.jsonl \
+    --image-folder data/images \
+    --answers-file ~/Dissertation/results/answer-file.jsonl \
+    --temperature 0.0
 
-# (Optional) Launch the gradio web server if needed
-# python -m llava.serve.gradio_web_server --controller http://localhost:10000
+# Change to the Dissertation directory and process results
+cd ~/Dissertation
+python scripts/process_results.py --input results/answer-file.jsonl --output results/processed_results.jsonl
