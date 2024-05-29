@@ -21,16 +21,10 @@
 
 ################# Part-2 Shell script ####################
 # Source the conda initialization script
-source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/etc/profile.d/conda.sh
+source /opt/gridware/depots/761a7df9/el7/pkg/apps/anaconda3/2023.03/bin/etc/profile.d/conda.sh
 
 # Activate the conda environment
 conda activate llavamed
-
-# Define the experiment name
-EXPERIMENT_NAME="slake_test_$(date +%Y%m%d_%H%M%S)"
-
-# Create new experiment directory and organize initial results
-python3 ~/sharedscratch/Dissertation/manage_experiments.py $EXPERIMENT_NAME
 
 # Verify the script path
 if [ ! -f /users/jjls2000/LLaVA-Med/llava/eval/model_vqa.py ]; then
@@ -44,8 +38,5 @@ python /users/jjls2000/LLaVA-Med/llava/eval/model_vqa.py \
     --model-path /users/jjls2000/sharedscratch/Dissertation/checkpoints/slake \
     --question-file /users/jjls2000/LLaVA-Med/data/eval/llava_med_eval_qa50_qa.jsonl \
     --image-folder /users/jjls2000/sharedscratch/Dissertation/data/images \
-    --answers-file /users/jjls2000/sharedscratch/Dissertation/results/${EXPERIMENT_NAME}/answer-file-${SLURM_JOB_ID}.jsonl \
+    --answers-file /users/jjls2000/sharedscratch/Dissertation/results/slake/answer-file-${SLURM_JOB_ID}.jsonl \
     --temperature 0.0
-
-# Move results after experiment completes
-python3 ~/sharedscratch/Dissertation/manage_experiments.py $EXPERIMENT_NAME
