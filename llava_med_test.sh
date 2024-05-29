@@ -18,6 +18,6 @@ python /users/jjls2000/LLaVA-Med/llava/eval/model_vqa.py \
     --conv-mode mistral_instruct \
     --model-path microsoft/llava-med-v1.5-mistral-7b \
     --question-file /users/jjls2000/LLaVA-Med/data/eval/llava_med_eval_qa50_qa.jsonl \
-    --image-folder /users/jjls2000/Dissertation/data/images \
+    --image-folder /users/jjls2000/Dissertation/data/imgs-1 \
     --answers-file /users/jjls2000/Dissertation/results/answer-file.jsonl \
     --temperature 0.0
