@@ -21,7 +21,6 @@ with open(test_data_path, 'r') as file:
 # Prepare output file
 output_file_path = "llava_med_test_results.jsonl"
 with open(output_file_path, 'w') as outfile:
-
     # Run inference on each test example
     for example in test_data:
         inputs = tokenizer(example['question'], return_tensors="pt").to(device)

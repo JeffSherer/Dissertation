@@ -9,15 +9,16 @@
 #SBATCH --time=02:00:00
 
 # Load necessary modules and activate environment
+source "${flight_ROOT:-/opt/flight}"/etc/setup.sh
 flight env activate gridware
 module load apps/nvidia-cuda/11.2.2
 conda activate llavamed
 
-# Run the test script
-python /users/jjls2000/LLaVA-Med/llava/eval/model_vqa.py \
+# Run the evaluation script
+python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
     --conv-mode mistral_instruct \
     --model-path microsoft/llava-med-v1.5-mistral-7b \
-    --question-file /users/jjls2000/LLaVA-Med/data/eval/llava_med_eval_qa50_qa.jsonl \
-    --image-folder /users/jjls2000/Dissertation/data/images \
-    --answers-file /users/jjls2000/Dissertation/results/answer-file.jsonl \
+    --question-file /users/jjls2000/sharedscratch/LLaVA-Med/data/eval/llava_med_eval_qa50_qa.jsonl \
+    --image-folder /users/jjls2000/sharedscratch/Dissertation/data/images \
+    --answers-file /users/jjls2000/sharedscratch/Dissertation/results/answer-file.jsonl \
     --temperature 0.0
