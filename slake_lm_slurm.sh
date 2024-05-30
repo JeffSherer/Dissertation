@@ -27,16 +27,16 @@ source /opt/gridware/depots/761a7df9/el7/pkg/apps/anaconda3/2023.03/bin/etc/prof
 conda activate llavamed
 
 # Verify the script path
-if [ ! -f /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py ]; then
-  echo "Script model_vqa.py not found!"
+if [ ! -f /users/jjls2000/LLaVA-Med/llava/eval/run_model_vqa.py ]; then
+  echo "Script run_model_vqa.py not found!"
   exit 1
 fi
 
 # Run the test script with SLaKE checkpoint
-python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
+python /users/jjls2000/LLaVA-Med/llava/eval/run_model_vqa.py \
     --conv-mode mistral_instruct \
-    --model-path /users/jjls2000/sharedscratch/Dissertation/Slake1.0-9epoch_delta \
-    --question-file /users/jjls2000/sharedscratch/LLaVA-Med/data/eval/llava_med_eval_qa50_qa.jsonl \
+    --model-path /users/jjls2000/sharedscratch/Dissertation/checkpoints/slake \
+    --question-file /users/jjls2000/LLaVA-Med/data/eval/llava_med_eval_qa50_qa.jsonl \
     --image-folder /users/jjls2000/sharedscratch/Dissertation/data/images \
     --answers-file /users/jjls2000/sharedscratch/Dissertation/results/slake/answer-file-${SLURM_JOB_ID}.jsonl \
     --temperature 0.0
