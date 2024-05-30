@@ -26,16 +26,27 @@ source /opt/gridware/depots/761a7df9/el7/pkg/apps/anaconda3/2023.03/bin/etc/prof
 # Activate the conda environment
 conda activate llavamed
 
-# Verify the script path
+# Check if model_vqa.py exists
 if [ ! -f /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py ]; then
   echo "Script model_vqa.py not found!"
   exit 1
 fi
 
+# Verify the existence of necessary model files
+MODEL_PATH="/users/jjls2000/sharedscratch/Dissertation/Slake1.0-9epoch_delta"
+REQUIRED_FILES=("config.json" "pytorch_model.bin" "tokenizer_config.json" "tokenizer.model")
+
+for FILE in "${REQUIRED_FILES[@]}"; do
+  if [ ! -f "$MODEL_PATH/$FILE" ]; then
+    echo "Model file $FILE not found in $MODEL_PATH"
+    exit 1
+  fi
+done
+
 # Run the test script with SLaKE checkpoint
 python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
     --conv-mode mistral_instruct \
-    --model-path /users/jjls2000/sharedscratch/Dissertation/checkpoints/slake \
+    --model-path $MODEL_PATH \
     --question-file /users/jjls2000/sharedscratch/LLaVA-Med/data/eval/llava_med_eval_qa50_qa.jsonl \
     --image-folder /users/jjls2000/sharedscratch/Dissertation/data/images \
     --answers-file /users/jjls2000/sharedscratch/Dissertation/results/slake/answer-file-${SLURM_JOB_ID}.jsonl \
