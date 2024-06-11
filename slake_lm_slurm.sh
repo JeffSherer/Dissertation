@@ -1,25 +1,28 @@
 #!/bin/bash -l
 
 ################# Part-1 Slurm directives ####################
-## Working dir
+# Working dir
 #SBATCH -D /users/jjls2000/sharedscratch/Dissertation
-## Environment variables
+# Environment variables
 #SBATCH --export=ALL
-## Output and Error Files
+# Output and Error Files
 #SBATCH -o llava-med-test-%j.out
 #SBATCH -e llava-med-test-%j.err
-## Job name
+# Job name
 #SBATCH -J slake-test
-## Run time: "hours:minutes:seconds", "days-hours"
+# Run time: "hours:minutes:seconds", "days-hours"
 #SBATCH --time=02:00:00
-## Memory limit (in megabytes)
+# Memory limit (in gigabytes)
 #SBATCH --mem=32G
-## GPU requirements
+# GPU requirements
 #SBATCH --gres=gpu:1
-## Specify partition
+# Specify partition
 #SBATCH -p gpu
 
 ################# Part-2 Shell script ####################
+# Ensure the module system is ready and CUDA is available
+module load cuda/11.7  # Adjust as per your cluster's CUDA module availability
+
 # Source the conda initialization script
 source /opt/gridware/depots/761a7df9/el7/pkg/apps/anaconda3/2023.03/bin/etc/profile.d/conda.sh
 
