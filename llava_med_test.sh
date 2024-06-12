@@ -12,7 +12,7 @@
 #SBATCH -p gpu
 
 # Source common setup script
-source /path/to/common_setup.sh
+source /users/jjls2000/sharedscratch/Dissertation/common_setup.sh
 
 # Activate the conda environment
 activate_env llavamed
@@ -38,6 +38,7 @@ python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
     --image-folder /users/jjls2000/sharedscratch/Dissertation/data/images \
     --answers-file /users/jjls2000/sharedscratch/Dissertation/results/${EXPERIMENT_NAME}/answer-file-${SLURM_JOB_ID}.jsonl \
     --temperature 0.0
+
 
 # Optionally handle the results after experiment completes
 # python3 /path/to/manage_results.py $RESULTS_DIR
