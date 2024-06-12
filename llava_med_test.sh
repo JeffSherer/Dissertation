@@ -11,7 +11,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH -p gpu
 
-# Source common setup script
+# Source the common setup script
 source /users/jjls2000/sharedscratch/Dissertation/common_setup.sh
 
 # Activate the conda environment
@@ -23,22 +23,11 @@ EXPERIMENT_NAME="slake_test_$(date +%Y%m%d_%H%M%S)"
 # Create new experiment directory and organize initial results
 RESULTS_DIR=$(create_experiment_dir $EXPERIMENT_NAME "/users/jjls2000/sharedscratch/Dissertation")
 
-# Verify the script path
-SCRIPT_PATH="/users/jjls2000/LLaVA-Med/llava/eval/model_vqa.py"
-if [ ! -f $SCRIPT_PATH ]; then
-  echo "Script ${SCRIPT_PATH} not found!"
-  exit 1
-fi
-
 # Run the test script with SLaKE checkpoint
 python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
     --conv-mode mistral_instruct \
     --model-path /users/jjls2000/sharedscratch/Dissertation/checkpoints/slake \
     --question-file /users/jjls2000/LLaVA-Med/data/eval/llava_med_eval_qa50_qa.jsonl \
     --image-folder /users/jjls2000/sharedscratch/Dissertation/data/images \
-    --answers-file /users/jjls2000/sharedscratch/Dissertation/results/${EXPERIMENT_NAME}/answer-file-${SLURM_JOB_ID}.jsonl \
+    --answers-file ${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl \
     --temperature 0.0
-
-
-# Optionally handle the results after experiment completes
-# python3 /path/to/manage_results.py $RESULTS_DIR
