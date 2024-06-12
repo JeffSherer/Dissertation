@@ -13,7 +13,7 @@ function create_experiment_dir() {
     echo "${results_dir}"
 }
 
-# Activate the conda environment
+# Activate the conda environment hello
 function activate_env() {
     conda activate $1
 }
