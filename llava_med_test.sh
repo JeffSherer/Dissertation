@@ -27,9 +27,9 @@ echo "Experiment Name: ${EXPERIMENT_NAME}"
 # Execute the Python script using the model and data files
 python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
     --conv-mode mistral_instruct \
-    --model-path "microsoft/llava-med-v1.5-mistral-7b" \  # Updated to use Hugging Face model ID
-    --question-file /users/jjls2000/LLaVA-Med/data/eval/llava_med_eval_qa50_qa.jsonl \
-    --image-folder /users/jjls2000/sharedscratch/Dissertation/data/images \
+    --model-path "microsoft/llava-med-v1.5-mistral-7b" \
+    --question-file "/users/jjls2000/LLaVA-Med/data/eval/llava_med_eval_qa50_qa.jsonl" \
+    --image-folder "/users/jjls2000/sharedscratch/Dissertation/data/images" \
     --answers-file "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl" \
     --temperature 0.0
 
