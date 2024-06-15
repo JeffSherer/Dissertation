@@ -27,7 +27,7 @@ echo "Experiment Name: ${EXPERIMENT_NAME}"
 # Execute the Python script using the model and data files
 python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
     --conv-mode mistral_instruct \
-    --model-path /users/jjls2000/sharedscratch/Dissertation/checkpoints/slake \
+    --model-path /users/jjls2000/sharedscratch/Dissertation/Slake1.0-9epoch_delta \
     --question-file /users/jjls2000/LLaVA-Med/data/eval/llava_med_eval_qa50_qa.jsonl \
     --image-folder /users/jjls2000/sharedscratch/Dissertation/data/images \
     --answers-file "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl" \
