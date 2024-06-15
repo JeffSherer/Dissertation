@@ -2,7 +2,8 @@
 
 # Ensure Conda is initialized properly
 # Replace "/opt/anaconda3/etc/profile.d/conda.sh" with the actual path to your conda.sh
-source "/opt/anaconda3/etc/profile.d/conda.sh"
+source /opt/gridware/depots/761a7df9/el7/pkg/apps/anaconda3/2023.03/bin/etc/profile.d/conda.sh
+
 
 # Function to create an experiment directory
 function create_experiment_dir() {
