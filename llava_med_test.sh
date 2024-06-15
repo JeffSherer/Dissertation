@@ -24,6 +24,7 @@ EXPERIMENT_NAME="slake_test_$(date +%Y%m%d_%H%M%S)"
 RESULTS_DIR=$(create_experiment_dir $EXPERIMENT_NAME "/users/jjls2000/sharedscratch/Dissertation")
 
 # Run the test script with SLaKE checkpoint
+
 python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
     --conv-mode mistral_instruct \
     --model-path /users/jjls2000/sharedscratch/Dissertation/checkpoints/slake \
@@ -31,3 +32,13 @@ python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
     --image-folder /users/jjls2000/sharedscratch/Dissertation/data/images \
     --answers-file ${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl \
     --temperature 0.0
+
+
+    # Add output files to Git repository
+git add /users/jjls2000/sharedscratch/Dissertation/results/${EXPERIMENT_NAME}/answer-file-${SLURM_JOB_ID}.jsonl
+
+# Commit the changes with a message containing job ID
+git commit -m "Add output for job ${SLURM_JOB_ID}"
+
+# Push changes to GitHub
+git push origin main
