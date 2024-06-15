@@ -13,7 +13,7 @@ function create_experiment_dir() {
 
     echo "Your results will be stored in: ${results_dir}"
     mkdir -p "${results_dir}"
-    return "${results_dir}"
+    echo "${results_dir}"
 }
 
 # Function to activate the conda environment
