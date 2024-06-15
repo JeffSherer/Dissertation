@@ -1,8 +1,10 @@
 #!/bin/bash
-# Load the Flight Environment
-source "${flight_ROOT:-/opt/flight}"/etc/profile.d/conda.sh
 
-# Function to create experiment directory
+# Ensure Conda is initialized properly
+# Replace "/opt/anaconda3/etc/profile.d/conda.sh" with the actual path to your conda.sh
+source "/opt/anaconda3/etc/profile.d/conda.sh"
+
+# Function to create an experiment directory
 function create_experiment_dir() {
     local experiment_name=$1
     local base_dir=$2
@@ -10,10 +12,16 @@ function create_experiment_dir() {
 
     echo "Your results will be stored in: ${results_dir}"
     mkdir -p "${results_dir}"
-    echo "${results_dir}"
+    return "${results_dir}"
 }
 
-# Activate the conda environment hello
+# Function to activate the conda environment
 function activate_env() {
-    conda activate $1
+    local env_name=$1
+    echo "Activating Conda environment: ${env_name}"
+    conda activate "${env_name}"
 }
+
+# Example usage within a SLURM script or other batch job
+# activate_env "hello"
+# results_dir=$(create_experiment_dir "MyExperiment" "/path/to/base/dir")
