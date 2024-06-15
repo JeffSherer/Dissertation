@@ -11,38 +11,18 @@
 #SBATCH --gres=gpu:1  # GPU resource allocation
 #SBATCH -p gpu  # Partition
 
-# Source the flight environment setup script for managing Conda environments
-source "${flight_ROOT:-/opt/flight}"/etc/setup.sh
+# Activate conda environment
+source /opt/gridware/depots/761a7df9/el7/pkg/apps/anaconda3/2023.03/bin/etc/profile.d/conda.sh
+conda activate llavamed
 
-# Load necessary modules (Adjust these if different modules are needed)
-flight env activate gridware  # Activate the flight gridware environment
-module load mpi/openmpi  # Load MPI module for parallel processing
-
-# Function to activate conda environment
-function activate_env() {
-    local env_name=$1
-    echo "Activating conda environment: $env_name"
-    conda activate "$env_name"
-}
-
-# Function to create an experiment directory
-function create_experiment_dir() {
-    local experiment_name=$1
-    local base_dir=$2
-    local results_dir="${base_dir}/${experiment_name}-outputs/${SLURM_JOB_ID}"
-    echo "Your results will be stored in: $results_dir"
-    mkdir -p "$results_dir"
-    echo "$results_dir"
-}
-
-# Activate the required Conda environment
-activate_env "llavamed"
-
-# Define experiment name based on current date and time
+# Define the experiment name and results directory
 EXPERIMENT_NAME="slake_test_$(date +%Y%m%d_%H%M%S)"
+RESULTS_DIR="/users/jjls2000/sharedscratch/Dissertation/results/${EXPERIMENT_NAME}"
+mkdir -p "${RESULTS_DIR}"  # Ensure the directory exists
 
-# Create a directory to store the results of the experiment
-RESULTS_DIR=$(create_experiment_dir "$EXPERIMENT_NAME" "/users/jjls2000/sharedscratch/Dissertation")
+# Print out environment variables and paths for debugging
+echo "Results Directory: ${RESULTS_DIR}"
+echo "Experiment Name: ${EXPERIMENT_NAME}"
 
 # Execute the Python script using the model and data files
 python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
@@ -53,8 +33,12 @@ python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
     --answers-file "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl" \
     --temperature 0.0
 
-# Handle Git operations for version control and collaboration
-cd /users/jjls2000/sharedscratch/Dissertation
-git add "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl"
-git commit -m "Add output for job ${SLURM_JOB_ID}"
-git push origin main
+# Check the existence of the output file before committing to Git
+if [ -f "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl" ]; then
+    cd /users/jjls2000/sharedscratch/Dissertation
+    git add "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl"
+    git commit -m "Add output for job ${SLURM_JOB_ID}"
+    git push origin main
+else
+    echo "Output file not found: ${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl"
+fi
