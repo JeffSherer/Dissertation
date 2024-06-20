@@ -17,8 +17,6 @@
 module purge
 module load app/anaconda/anaconda3  # Adjust based on your specific module environment
 
-
-
 # Navigate to the working directory
 cd /users/jjls2000/sharedscratch/Dissertation
 
@@ -34,6 +32,9 @@ echo "Results Directory: ${RESULTS_DIR}"
 echo "Experiment Name: ${EXPERIMENT_NAME}"
 
 ################# Part-4 Execute Fine-Tuning Script ####################
+
+# Activate Conda environment if needed
+conda activate llavamed
 
 # Execute the fine-tuning script using DeepSpeed
 deepspeed llava/train/train_mem.py \
@@ -83,4 +84,6 @@ else
 fi
 
 # Deactivate Conda environment after job completion (optional)
-flight env deactivate
+if command -v flight &> /dev/null; then
+    flight env deactivate
+fi
