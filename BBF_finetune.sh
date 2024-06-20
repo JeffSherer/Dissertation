@@ -17,8 +17,6 @@
 module purge
 module load app/anaconda/anaconda3  # Adjust based on your specific module environment
 
-# Activate Conda environment
-flight env activate conda@llavamed
 
 
 # Navigate to the working directory
