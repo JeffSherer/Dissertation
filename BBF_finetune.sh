@@ -20,8 +20,6 @@ module load app/anaconda/anaconda3  # Adjust based on your specific module envir
 # Activate Conda environment
 flight env activate conda@llavamed
 
-# Set CUDA_HOME if necessary (replace with your CUDA installation path)
-export CUDA_HOME=/path/to/your/cuda
 
 # Navigate to the working directory
 cd /users/jjls2000/sharedscratch/Dissertation
