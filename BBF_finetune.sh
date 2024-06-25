@@ -14,11 +14,13 @@
 ################# Part-2 Environment Setup ####################
 
 # Load necessary modules and activate environment
-module purge
-module load app/anaconda/anaconda3  # Adjust based on your specific module environment
+source /etc/profile.d/modules.sh
+module load apps/anaconda3/2023.03/bin
+module load libs/nvidia-cuda/11.8.0/bin
+export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
 
-# Navigate to the working directory
-cd /users/jjls2000/sharedscratch/Dissertation
+# Activate Conda environment
+source activate llavamed
 
 ################# Part-3 Define Experiment and Directories ####################
 
@@ -32,9 +34,6 @@ echo "Results Directory: ${RESULTS_DIR}"
 echo "Experiment Name: ${EXPERIMENT_NAME}"
 
 ################# Part-4 Execute Fine-Tuning Script ####################
-
-# Activate Conda environment if needed
-conda activate llavamed
 
 # Execute the fine-tuning script using DeepSpeed
 deepspeed llava/train/train_mem.py \
