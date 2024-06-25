@@ -1,26 +1,30 @@
 #!/bin/bash -l
 
-# SLURM Directives
-#SBATCH -D /users/jjls2000/sharedscratch/Dissertation
+################# Part-1 Slurm directives ####################
+#SBATCH -D /users/jjls2000/sharedscratch/Dissertation  # Set working directory
 #SBATCH --export=ALL
-#SBATCH -o llava-med-test-%j.out
-#SBATCH -e llava-med-test-%j.err
-#SBATCH -J slake-test
-#SBATCH --time=02:00:00
-#SBATCH --mem=32G
-#SBATCH --gres=gpu:1
-#SBATCH -p gpu
+#SBATCH -o llava-med-test-%j.out  # Standard output file
+#SBATCH -e llava-med-test-%j.err  # Standard error file
+#SBATCH -J slake-test  # Job name
+#SBATCH --time=02:00:00  # Job run time
+#SBATCH --mem=32G  # Memory required
+#SBATCH --gres=gpu:1  # GPU resource allocation
+#SBATCH -p gpu  # Partition
 
-# Load necessary modules
-module load anaconda3/2023.03 2>/dev/null || source /opt/gridware/depots/761a7df9/el7/pkg/apps/anaconda3/2023.03/bin/etc/profile.d/conda.sh
+# Activate the conda environment
+source /opt/gridware/depots/761a7df9/el7/pkg/apps/anaconda3/2023.03/bin/etc/profile.d/conda.sh
 conda activate llavamed
 
-# Prepare environment
+# Define the experiment name and results directory
 EXPERIMENT_NAME="slake_test_$(date +%Y%m%d_%H%M%S)"
 RESULTS_DIR="/users/jjls2000/sharedscratch/Dissertation/results/${EXPERIMENT_NAME}"
-mkdir -p "${RESULTS_DIR}" || { echo "Failed to create directory"; exit 1; }
+mkdir -p "${RESULTS_DIR}"  # Ensure the directory exists
 
-# Execute
+# Print out environment variables and paths for debugging
+echo "Results Directory: ${RESULTS_DIR}"
+echo "Experiment Name: ${EXPERIMENT_NAME}"
+
+# Execute the Python script using the model and data files
 python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
     --conv-mode mistral_instruct \
     --model-path "microsoft/llava-med-v1.5-mistral-7b" \
@@ -29,7 +33,7 @@ python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
     --answers-file "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl" \
     --temperature 0.0 > "${RESULTS_DIR}/model_run-${SLURM_JOB_ID}.log" 2>&1
 
-# Check and commit to Git
+# Check the existence of the output file before committing to Git
 if [ -f "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl" ]; then
     cd /users/jjls2000/sharedscratch/Dissertation
     git add "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl"
@@ -37,5 +41,4 @@ if [ -f "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl" ]; then
     git push origin main
 else
     echo "Output file not found: ${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl"
-    exit 1
 fi
