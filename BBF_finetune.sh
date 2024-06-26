@@ -83,7 +83,3 @@ else
     echo "Output file not found: ${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl"
 fi
 
-# Deactivate Conda environment after job completion (optional)
-if command -v flight &> /dev/null; then
-    flight env deactivate
-fi
