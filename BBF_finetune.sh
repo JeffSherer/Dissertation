@@ -18,7 +18,7 @@ source "${flight_ROOT:-/opt/flight}"/etc/setup.sh  # Adjusted to use flight setu
 flight env activate gridware  # Ensure the environment is activated
 module load apps/anaconda3/2023.03/bin
 module load libs/nvidia-cuda/11.8.0/bin
-export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0  # Ensure CUDA_HOME is set correctly
+export CUDA_HOME=/opt/gridware/depots/761a7df9/el7/pkg/libs/nvidia-cuda/11.8.0/bin
 
 # Activate Conda environment
 source activate llavamed
