@@ -13,11 +13,12 @@
 
 ################# Part-2 Environment Setup ####################
 
-# Load necessary modules and activate environment
-source /etc/profile.d/modules.sh
+# Activate necessary environment modules
+source "${flight_ROOT:-/opt/flight}"/etc/setup.sh  # Adjusted to use flight setup script
+flight env activate gridware  # Ensure the environment is activated
 module load apps/anaconda3/2023.03/bin
 module load libs/nvidia-cuda/11.8.0/bin
-export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
+export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0  # Ensure CUDA_HOME is set correctly
 
 # Activate Conda environment
 source activate llavamed
