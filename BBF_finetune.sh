@@ -45,8 +45,8 @@ export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 ################# Part-4 Execute Fine-Tuning Script ####################
 
 # Execute the fine-tuning using the BBF dataset
-deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
-    --deepspeed_config /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
+deepspeed --num_gpus=1 /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
+    --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
     --lora_enable True \
     --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-llavammed-7b \
     --version "llava_med_v1.5" \
