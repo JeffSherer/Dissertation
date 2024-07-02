@@ -14,6 +14,7 @@
 ################# Part-2 Environment Setup ####################
 
 # Load necessary modules
+source /etc/profile.d/modules.sh  # Ensure the modules system is available
 module load apps/anaconda3/2023.03
 module load libs/nvidia-cuda/11.8.0
 
@@ -21,8 +22,12 @@ module load libs/nvidia-cuda/11.8.0
 source activate llavamed  # Ensure this points to the correct path where your conda environments are managed
 
 # Set CUDA environment variable
-export CUDA_HOME=/usr/local/cuda-11.8
+export CUDA_HOME=$CUDA_PATH  # Assuming the module load sets CUDA_PATH
 export PATH=$CUDA_HOME/bin:$PATH
+
+# Set Triton cache directory to a non-NFS path
+export TRITON_CACHE_DIR=/users/jjls2000/local_cache
+mkdir -p $TRITON_CACHE_DIR
 
 ################# Part-3 Define Experiment and Directories ####################
 
