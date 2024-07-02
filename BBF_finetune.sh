@@ -18,7 +18,11 @@ module load apps/anaconda3/2023.03
 module load libs/nvidia-cuda/11.8.0
 
 # Activate Conda environment
-source activate llavamed  # Make sure this points to the correct path where your conda environments are managed
+source activate llavamed  # Ensure this points to the correct path where your conda environments are managed
+
+# Set CUDA environment variable
+export CUDA_HOME=/usr/local/cuda-11.8
+export PATH=$CUDA_HOME/bin:$PATH
 
 ################# Part-3 Define Experiment and Directories ####################
 
@@ -27,15 +31,14 @@ DATA_PATH="/users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented"
 RESULTS_DIR="/users/jjls2000/sharedscratch/Dissertation/results/$(date +%Y%m%d_%H%M%S)"
 mkdir -p "${RESULTS_DIR}"  # Ensure the directory exists
 
-# Define dataset files
+# Define dataset file
 BBF_TRAIN_JSON="${DATA_PATH}/BBF_train.json"
-BBL_TRAIN_JSON="${DATA_PATH}/BBL_train.json"
 
 ################# Part-4 Execute Fine-Tuning Script ####################
 
 # Execute the fine-tuning using the BBF dataset
 deepspeed /users/jjls2000/sharedscratch/Dissertation/train/train_mem.py \  # Corrected path for the training script
-    --deepspeed ./scripts/zero2.json \
+    --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
     --lora_enable True \
     --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-llavammed-7b \
     --version "llava_med_v1.5" \
@@ -52,8 +55,6 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/train/train_mem.py \  # Cor
     --report_to none  # Change as per your tracking system, e.g., wandb
 
 echo "Training completed for BBF dataset."
-
-# Optionally run a second job for the BBL dataset by changing --data_path to "${BBL_TRAIN_JSON}"
 
 ################# Part-5 Optional Post-Processing ####################
 
