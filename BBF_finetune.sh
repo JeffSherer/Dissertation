@@ -14,7 +14,7 @@
 ################# Part-2 Environment Setup ####################
 
 # Load necessary modules
-source /etc/profile.d/modules.sh  # Ensure the modules system is available
+source /etc/profile  # Correct source file for environment setup
 module load apps/anaconda3/2023.03
 module load libs/nvidia-cuda/11.8.0
 
@@ -40,6 +40,9 @@ mkdir -p "${RESULTS_DIR}"  # Ensure the directory exists
 BBF_TRAIN_JSON="${DATA_PATH}/BBF_train.json"
 
 ################# Part-4 Execute Fine-Tuning Script ####################
+
+# Ensure the Python script can find the module
+export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
 # Execute the fine-tuning using the BBF dataset
 deepspeed /users/jjls2000/sharedscratch/Dissertation/train/train_mem.py \  # Corrected path for the training script
