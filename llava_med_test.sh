@@ -57,7 +57,7 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --data_path "${BBF_TRAIN_JSON}" \
     --image_folder /users/jjls2000/sharedscratch/Dissertation/data/images \
     --vision_tower openai/clip-vit-large-patch14 \
-    --pretrain_mm_mlp_adapter /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-llavammed-7b-pretrain/mm_projector.bin \
+    --pretrain_mm_mlp_adapter /users/jjls2000/sharedscratch/Dissertation/Slake1.0-9epoch_delta/mm_projector.bin \
     --mm_vision_select_layer -2 \
     --mm_use_im_start_end False \
     --mm_use_im_patch_token False \
