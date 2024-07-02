@@ -14,7 +14,7 @@
 ################# Part-2 Environment Setup ####################
 
 # Load necessary modules
-source /etc/profile  # Correct source file for environment setup
+source /etc/profile  # Ensure the modules system is available
 module load apps/anaconda3/2023.03
 module load libs/nvidia-cuda/11.8.0
 
@@ -39,14 +39,17 @@ mkdir -p "${RESULTS_DIR}"  # Ensure the directory exists
 # Define dataset file
 BBF_TRAIN_JSON="${DATA_PATH}/BBF_train.json"
 
-################# Part-4 Execute Fine-Tuning Script ####################
-
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
+################# Part-4 Execute Fine-Tuning Script ####################
+
+# Ensure deepspeed is installed
+conda install -y deepspeed
+
 # Execute the fine-tuning using the BBF dataset
-deepspeed /users/jjls2000/sharedscratch/Dissertation/train/train_mem.py \  # Corrected path for the training script
-    --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
+deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \  # Corrected path for the training script
+    --deepspeed_config /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
     --lora_enable True \
     --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-llavammed-7b \
     --version "llava_med_v1.5" \
