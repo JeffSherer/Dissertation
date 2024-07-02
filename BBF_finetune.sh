@@ -42,24 +42,45 @@ BBF_TRAIN_JSON="${DATA_PATH}/BBF_train.json"
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
+# Model and prompt versions
+PROMPT_VERSION="llava_med_v1.5"
+MODEL_VERSION="llava-llavammed-7b"
+
 ################# Part-4 Execute Fine-Tuning Script ####################
 
 # Execute the fine-tuning using the BBF dataset
-deepspeed --num_gpus=1 /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
+deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
     --lora_enable True \
-    --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-llavammed-7b \
-    --version "llava_med_v1.5" \
+    --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/$MODEL_VERSION \
+    --version $PROMPT_VERSION \
     --data_path "${BBF_TRAIN_JSON}" \
     --image_folder /users/jjls2000/sharedscratch/Dissertation/data/images \
     --vision_tower openai/clip-vit-large-patch14 \
-    --pretrain_mm_mlp_adapter /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-llavammed-7b-pretrain/mm_projector.bin \
+    --pretrain_mm_mlp_adapter /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-$MODEL_VERSION-pretrain/mm_projector.bin \
+    --mm_vision_select_layer -2 \
+    --mm_use_im_start_end False \
+    --mm_use_im_patch_token False \
+    --bf16 True \
     --output_dir "${RESULTS_DIR}" \
     --num_train_epochs 3 \
     --per_device_train_batch_size 16 \
-    --logging_steps 100 \
-    --gradient_checkpointing True \
+    --per_device_eval_batch_size 4 \
+    --gradient_accumulation_steps 1 \
+    --evaluation_strategy "no" \
+    --save_strategy "steps" \
+    --save_steps 50000 \
     --save_total_limit 1 \
+    --learning_rate 2e-5 \
+    --weight_decay 0. \
+    --warmup_ratio 0.03 \
+    --lr_scheduler_type "cosine" \
+    --logging_steps 100 \
+    --tf32 True \
+    --model_max_length 2048 \
+    --gradient_checkpointing True \
+    --lazy_preprocess True \
+    --dataloader_num_workers 4 \
     --report_to none  # Change as per your tracking system, e.g., wandb
 
 echo "Training completed for BBF dataset."
