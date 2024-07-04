@@ -13,6 +13,12 @@
 
 ################# Part-2 Environment Setup ####################
 
+# Activate Conda environment
+source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/bin/activate llavamed
+
+# Install deepspeed if not already installed
+pip show deepspeed &> /dev/null || pip install deepspeed
+
 # Set CUDA environment variables
 export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
 export PATH=$CUDA_HOME/bin:$CUDA_HOME/bin/bin:$PATH
@@ -24,37 +30,24 @@ mkdir -p $TRITON_CACHE_DIR
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
-
-################# Part-3 Define Experiment and Directories ####################
-
-# Define paths for the dataset and results directory
-DATA_PATH="/users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented"
-RESULTS_DIR="/users/jjls2000/sharedscratch/Dissertation/results/$(date +%Y%m%d_%H%M%S)"
-mkdir -p "${RESULTS_DIR}"  # Ensure the directory exists
-
-# Define dataset file
-BBF_TRAIN_JSON="${DATA_PATH}/BBF_train.json"
-
-################# Part-4 Execute Fine-Tuning Script ####################
+################# Part-3 Execute Fine-Tuning Script ####################
 
 # Execute the fine-tuning using the BBF dataset
 deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
-    --lora_enable True --lora_r 128 --lora_alpha 256 --mm_projector_lr 2e-5 \
+    --lora_enable True \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
-    --model_name_or_path microsoft/llava-med-v1.5-mistral-7b \
-    --version v1 \
-    --data_path "${BBF_TRAIN_JSON}" \
-    --image_folder /users/jjls2000/sharedscratch/Dissertation/data/imgs-1 \
-    --vision_tower openai/clip-vit-large-patch14-336 \
-    --mm_projector_type mlp2x_gelu \
+    --model_name_or_path "microsoft/llava-med-v1.5-mistral-7b" \
+    --version llava_med_v1.5 \
+    --data_path "/users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented/BBF_train.json" \
+    --image_folder "/users/jjls2000/sharedscratch/Dissertation/data/imgs-1" \
+    --vision_tower openai/clip-vit-large-patch14 \
+    --pretrain_mm_mlp_adapter "/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-llava-llavammed-7b-pretrain/mm_projector.bin" \
     --mm_vision_select_layer -2 \
     --mm_use_im_start_end False \
     --mm_use_im_patch_token False \
-    --image_aspect_ratio pad \
-    --group_by_modality_length True \
     --bf16 True \
-    --output_dir "${RESULTS_DIR}" \
-    --num_train_epochs 1 \
+    --output_dir "/users/jjls2000/sharedscratch/Dissertation/results/$(date +%Y%m%d_%H%M%S)" \
+    --num_train_epochs 3 \
     --per_device_train_batch_size 16 \
     --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 1 \
@@ -62,22 +55,24 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --save_strategy "steps" \
     --save_steps 50000 \
     --save_total_limit 1 \
-    --learning_rate 2e-4 \
+    --learning_rate 2e-5 \
     --weight_decay 0. \
     --warmup_ratio 0.03 \
     --lr_scheduler_type "cosine" \
-    --logging_steps 1 \
+    --logging_steps 100 \
     --tf32 True \
     --model_max_length 2048 \
     --gradient_checkpointing True \
+    --lazy_preprocess True \
     --dataloader_num_workers 4 \
-    --lazy_preprocess True
+    --report_to none  # Change as per your tracking system, e.g., wandb
 
 echo "Training completed for BBF dataset."
 
-################# Part-5 Optional Post-Processing ####################
+################# Part-4 Optional Post-Processing ####################
 
 # Check for output and log results, perhaps using Git or another method to manage results
+RESULTS_DIR="/users/jjls2000/sharedscratch/Dissertation/results/$(date +%Y%m%d_%H%M%S)"
 if [ -f "${RESULTS_DIR}/output_model.bin" ]; then
     echo "Model successfully trained and saved."
 else
