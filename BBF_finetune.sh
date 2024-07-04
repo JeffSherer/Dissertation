@@ -24,8 +24,9 @@ mkdir -p $TRITON_CACHE_DIR
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
-# Activate the Conda environment
-source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/bin/activate llavamed_new
+# Activate the Conda environment by using the full path to conda activate
+source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/etc/profile.d/conda.sh
+conda activate llavamed_new
 
 # Print environment setup for debugging
 echo "Using Python from: $(which python)"
