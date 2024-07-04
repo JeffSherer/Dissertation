@@ -24,6 +24,10 @@ mkdir -p $TRITON_CACHE_DIR
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
+# Print out the Python and transformers versions
+echo "Using Python from: $(which python)"
+python -c "import transformers; print('Transformers version:', transformers.__version__)"
+
 ################# Part-3 Execute Fine-Tuning Script ####################
 
 # Execute the fine-tuning using the BBF dataset
