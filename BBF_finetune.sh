@@ -13,12 +13,22 @@
 
 ################# Part-2 Environment Setup ####################
 
+# Load CUDA module
+module load libs/nvidia-cuda/11.8.0
+
 # Activate Conda environment
 source activate llavamed  # Ensure this points to the correct path where your conda environments are managed
 
 # Set CUDA environment variable
 export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
-export PATH=$CUDA_HOME/bin:$PATH
+export PATH=$CUDA_HOME/bin/bin:$PATH
+
+# Verify nvcc is available
+nvcc_path=$(which nvcc)
+if [ -z "$nvcc_path" ]; then
+    echo "nvcc not found. Please ensure CUDA is installed and the correct paths are set."
+    exit 1
+fi
 
 # Set Triton cache directory to a non-NFS path
 export TRITON_CACHE_DIR=/users/jjls2000/local_cache
