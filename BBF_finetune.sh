@@ -13,11 +13,6 @@
 
 ################# Part-2 Environment Setup ####################
 
-# Load necessary modules
-source /etc/profile  # Ensure the modules system is available
-module load apps/anaconda3/2023.03
-module load libs/nvidia-cuda/11.8.0
-
 # Activate Conda environment
 source activate llavamed  # Ensure this points to the correct path where your conda environments are managed
 
@@ -52,10 +47,10 @@ MODEL_VERSION="llava-llavammed-7b"
 deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
     --lora_enable True \
-    --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/$MODEL_VERSION \
+    --model_name_or_path "microsoft/llava-med-v1.5-mistral-7b" \
     --version $PROMPT_VERSION \
     --data_path "${BBF_TRAIN_JSON}" \
-    --image_folder /users/jjls2000/sharedscratch/Dissertation/data/images \
+    --image_folder /users/jjls2000/sharedscratch/Dissertation/data/imgs-1 \
     --vision_tower openai/clip-vit-large-patch14 \
     --pretrain_mm_mlp_adapter /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-$MODEL_VERSION-pretrain/mm_projector.bin \
     --mm_vision_select_layer -2 \
