@@ -13,22 +13,12 @@
 
 ################# Part-2 Environment Setup ####################
 
-# Load CUDA module
-module load libs/nvidia-cuda/11.8.0
-
 # Activate Conda environment
 source activate llavamed  # Ensure this points to the correct path where your conda environments are managed
 
 # Set CUDA environment variable
-export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0/bin
-export PATH=$CUDA_HOME/bin/bin:$PATH  # Adjusted to include the nested bin directory
-
-# Verify nvcc is available
-nvcc_path=$(which nvcc)
-if [ -z "$nvcc_path" ]; then
-    echo "nvcc not found. Please ensure CUDA is installed and the correct paths are set."
-    exit 1
-fi
+export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
+export PATH=$CUDA_HOME/bin:$PATH
 
 # Set Triton cache directory to a non-NFS path
 export TRITON_CACHE_DIR=/users/jjls2000/local_cache
@@ -53,19 +43,20 @@ MODEL_VERSION="llava-llavammed-7b"
 
 ################# Part-4 Execute Fine-Tuning Script ####################
 
-# Execute the fine-tuning using the BBF dataset
 deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
+    --lora_enable True --lora_r 128 --lora_alpha 256 --mm_projector_lr 2e-5 \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
-    --lora_enable True \
-    --model_name_or_path "microsoft/llava-med-v1.5-mistral-7b" \
+    --model_name_or_path microsoft/llava-med-v1.5-mistral-7b \
     --version $PROMPT_VERSION \
     --data_path "${BBF_TRAIN_JSON}" \
     --image_folder /users/jjls2000/sharedscratch/Dissertation/data/imgs-1 \
     --vision_tower openai/clip-vit-large-patch14 \
-    --pretrain_mm_mlp_adapter /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-$MODEL_VERSION-pretrain/mm_projector.bin \
+    --mm_projector_type mlp2x_gelu \
     --mm_vision_select_layer -2 \
     --mm_use_im_start_end False \
     --mm_use_im_patch_token False \
+    --image_aspect_ratio pad \
+    --group_by_modality_length True \
     --bf16 True \
     --output_dir "${RESULTS_DIR}" \
     --num_train_epochs 3 \
@@ -76,7 +67,7 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --save_strategy "steps" \
     --save_steps 50000 \
     --save_total_limit 1 \
-    --learning_rate 2e-5 \
+    --learning_rate 2e-4 \
     --weight_decay 0. \
     --warmup_ratio 0.03 \
     --lr_scheduler_type "cosine" \
@@ -84,9 +75,8 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --tf32 True \
     --model_max_length 2048 \
     --gradient_checkpointing True \
-    --lazy_preprocess True \
     --dataloader_num_workers 4 \
-    --report_to none  # Change as per your tracking system, e.g., wandb
+    --lazy_preprocess True
 
 echo "Training completed for BBF dataset."
 
