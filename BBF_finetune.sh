@@ -24,7 +24,7 @@ mkdir -p $TRITON_CACHE_DIR
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
-# Activate the Conda environment by using the full path to conda activate
+# Activate the Conda environment
 source /users/jjls2000/.conda/etc/profile.d/conda.sh
 conda activate llavamed_new
 
@@ -35,7 +35,7 @@ python -c "from transformers import LlamaConfig; print('LlamaConfig imported suc
 
 ################# Part-3 Execute Fine-Tuning Script ####################
 
-# Use the absolute path to the Python interpreter in your Conda environment
+# Use the absolute path to the deepspeed in your Conda environment
 /users/jjls2000/.conda/envs/llavamed_new/bin/deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
