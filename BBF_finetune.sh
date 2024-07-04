@@ -24,10 +24,6 @@ mkdir -p $TRITON_CACHE_DIR
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
-# Activate the Conda environment
-source /users/jjls2000/.conda/etc/profile.d/conda.sh
-conda activate llavamed_new
-
 # Print out the Python and transformers versions to verify environment setup
 echo "Using Python from: $(which python)"
 python -c "import transformers; print('Transformers version:', transformers.__version__)"
