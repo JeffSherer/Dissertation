@@ -20,8 +20,8 @@ module load libs/nvidia-cuda/11.8.0
 source activate llavamed  # Ensure this points to the correct path where your conda environments are managed
 
 # Set CUDA environment variable
-export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
-export PATH=$CUDA_HOME/bin/bin:$PATH
+export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0/bin
+export PATH=$CUDA_HOME/bin/bin:$PATH  # Adjusted to include the nested bin directory
 
 # Verify nvcc is available
 nvcc_path=$(which nvcc)
