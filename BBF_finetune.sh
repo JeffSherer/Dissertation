@@ -25,7 +25,6 @@ mkdir -p $TRITON_CACHE_DIR
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
 # Activate the Conda environment
-source /users/jjls2000/.conda/envs/llavamed_new/bin/activate
 
 # Print out the Python and transformers versions to verify environment setup
 echo "Using Python from: $(which python)"
