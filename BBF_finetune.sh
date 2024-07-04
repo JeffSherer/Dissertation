@@ -21,18 +21,9 @@ export PATH=$CUDA_HOME/bin:$CUDA_HOME/bin/bin:$PATH
 export TRITON_CACHE_DIR=/users/jjls2000/local_cache
 mkdir -p $TRITON_CACHE_DIR
 
-# Activate Conda environment using conda command
-source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/bin/conda activate llavamed
-
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
-# Verify environment setup
-echo "CUDA_HOME is set to: $CUDA_HOME"
-echo "PATH is set to: $PATH"
-which nvcc
-nvcc -V
-echo "PYTHONPATH is set to: $PYTHONPATH"
 
 ################# Part-3 Define Experiment and Directories ####################
 
