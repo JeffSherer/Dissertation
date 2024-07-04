@@ -24,14 +24,18 @@ mkdir -p $TRITON_CACHE_DIR
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
-# Print out the Python and transformers versions to verify environment setup
+# Activate the Conda environment
+source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/bin/activate llavamed_new
+
+# Print environment setup for debugging
 echo "Using Python from: $(which python)"
 python -c "import transformers; print('Transformers version:', transformers.__version__)"
+python -c "from transformers import LlamaConfig; print('LlamaConfig imported successfully')"
 
 ################# Part-3 Execute Fine-Tuning Script ####################
 
-# Execute the fine-tuning using the BBF dataset
-deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
+# Use the absolute path to the Python interpreter in your Conda environment
+/users/jjls2000/.conda/envs/llavamed_new/bin/deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
     --model_name_or_path "microsoft/llava-med-v1.5-mistral-7b" \
@@ -53,26 +57,4 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --save_strategy "steps" \
     --save_steps 50000 \
     --save_total_limit 1 \
-    --learning_rate 2e-5 \
-    --weight_decay 0. \
-    --warmup_ratio 0.03 \
-    --lr_scheduler_type "cosine" \
-    --logging_steps 100 \
-    --tf32 True \
-    --model_max_length 2048 \
-    --gradient_checkpointing True \
-    --lazy_preprocess True \
-    --dataloader_num_workers 4 \
-    --report_to none  # Change as per your tracking system, e.g., wandb
-
-echo "Training completed for BBF dataset."
-
-################# Part-4 Optional Post-Processing ####################
-
-# Check for output and log results, perhaps using Git or another method to manage results
-RESULTS_DIR="/users/jjls2000/sharedscratch/Dissertation/results/$(date +%Y%m%d_%H%M%S)"
-if [ -f "${RESULTS_DIR}/output_model.bin" ]; then
-    echo "Model successfully trained and saved."
-else
-    echo "Training failed or output model not saved."
-fi
+    --learning_rate 2e-
