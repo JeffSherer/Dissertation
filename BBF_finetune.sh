@@ -13,7 +13,7 @@
 
 ################# Part-2 Environment Setup ####################
 
-# Set CUDA environment variables
+# Load the required modules or set up environment variables
 export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
 export PATH=$CUDA_HOME/bin:$PATH
 
@@ -23,6 +23,9 @@ mkdir -p $TRITON_CACHE_DIR
 
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
+
+# Activate the Conda environment
+source /users/jjls2000/.conda/envs/llavamed_new/bin/activate
 
 # Print out the Python and transformers versions
 echo "Using Python from: $(which python)"
