@@ -18,7 +18,7 @@ source activate llavamed  # Ensure this points to the correct path where your co
 
 # Set CUDA environment variable
 export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
-export PATH=$CUDA_HOME/bin:$PATH
+export PATH=$CUDA_HOME/bin/bin:$PATH
 
 # Set Triton cache directory to a non-NFS path
 export TRITON_CACHE_DIR=/users/jjls2000/local_cache
