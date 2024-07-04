@@ -13,8 +13,6 @@
 
 ################# Part-2 Environment Setup ####################
 
-# Activate Conda environment
-source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/bin/activate llavamed
 
 # Install deepspeed if not already installed
 pip show deepspeed &> /dev/null || pip install deepspeed
