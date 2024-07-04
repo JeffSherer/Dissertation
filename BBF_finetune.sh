@@ -13,19 +13,12 @@
 
 ################# Part-2 Environment Setup ####################
 
-
-# Install deepspeed if not already installed
-pip show deepspeed &> /dev/null || pip install deepspeed
-
-# Install the correct version of bitsandbytes if not already installed
-pip show bitsandbytes &> /dev/null || pip install git+https://github.com/TimDettmers/bitsandbytes.git
-
 # Set CUDA environment variables
 export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
-export PATH=$CUDA_HOME/bin:$CUDA_HOME/bin/bin:$PATH
+export PATH=$CUDA_HOME/bin:$PATH
 
 # Set Triton cache directory to a non-NFS path
-export TRITON_CACHE_DIR=/users/jjls2000/local_cache
+export TRITON_CACHE_DIR=/users/jjls2000/triton_cache
 mkdir -p $TRITON_CACHE_DIR
 
 # Ensure the Python script can find the module
