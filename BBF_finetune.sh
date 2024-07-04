@@ -57,4 +57,26 @@ python -c "from transformers import LlamaConfig; print('LlamaConfig imported suc
     --save_strategy "steps" \
     --save_steps 50000 \
     --save_total_limit 1 \
-    --learning_rate 2e-
+    --learning_rate 2e-5 \
+    --weight_decay 0. \
+    --warmup_ratio 0.03 \
+    --lr_scheduler_type "cosine" \
+    --logging_steps 100 \
+    --tf32 True \
+    --model_max_length 2048 \
+    --gradient_checkpointing True \
+    --lazy_preprocess True \
+    --dataloader_num_workers 4 \
+    --report_to none  # Change as per your tracking system, e.g., wandb
+
+echo "Training completed for BBF dataset."
+
+################# Part-4 Optional Post-Processing ####################
+
+# Check for output and log results, perhaps using Git or another method to manage results
+RESULTS_DIR="/users/jjls2000/sharedscratch/Dissertation/results/$(date +%Y%m%d_%H%M%S)"
+if [ -f "${RESULTS_DIR}/output_model.bin" ]; then
+    echo "Model successfully trained and saved."
+else
+    echo "Training failed or output model not saved."
+fi
