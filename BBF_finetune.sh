@@ -24,17 +24,18 @@ mkdir -p $TRITON_CACHE_DIR
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
-# Specify the path to the Conda environment's Python executable
-PYTHON_EXEC="/users/jjls2000/.conda/envs/llavamed_new/bin/python"
+# Activate the Conda environment
+source /users/jjls2000/.conda/etc/profile.d/conda.sh
+conda activate llavamed_new
 
 # Print out the Python and transformers versions to verify environment setup
-echo "Using Python from: ${PYTHON_EXEC}"
-${PYTHON_EXEC} -c "import transformers; print('Transformers version:', transformers.__version__)"
+echo "Using Python from: $(which python)"
+python -c "import transformers; print('Transformers version:', transformers.__version__)"
 
 ################# Part-3 Execute Fine-Tuning Script ####################
 
 # Execute the fine-tuning using the BBF dataset
-deepspeed ${PYTHON_EXEC} /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
+deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
     --model_name_or_path "microsoft/llava-med-v1.5-mistral-7b" \
