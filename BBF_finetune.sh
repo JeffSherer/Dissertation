@@ -14,10 +14,11 @@
 ################# Part-2 Environment Setup ####################
 
 # Activate Conda environment
-source activate llavamed  # Ensure this points to the correct path where your conda environments are managed
+source /opt/gridware/depots/761a7df9/el7/pkg/apps/anaconda3/2023.03/bin/etc/profile.d/conda.sh
+conda activate llavamed  # Ensure this points to the correct path where your conda environments are managed
 
 # Set CUDA environment variable
-export CUDA_HOME=$CUDA_PATH  # Assuming the module load sets CUDA_PATH
+export CUDA_HOME=/usr/local/cuda-11.8  # Set to the appropriate path for your system
 export PATH=$CUDA_HOME/bin:$PATH
 
 # Set Triton cache directory to a non-NFS path
