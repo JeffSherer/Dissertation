@@ -11,85 +11,34 @@
 #SBATCH --gres=gpu:1  # GPU resource allocation
 #SBATCH -p gpu  # Partition
 
-################# Part-2 Environment Setup ####################
+# Activate the conda environment
+source /opt/gridware/depots/761a7df9/el7/pkg/apps/anaconda3/2023.03/bin/etc/profile.d/conda.sh
+conda activate llavamed
 
-# Load necessary modules
-source /etc/profile  # Ensure the modules system is available
-module load apps/anaconda3/2023.03
-module load libs/nvidia-cuda/11.8.0
-
-# Activate Conda environment
-source activate llavamed  # Ensure this points to the correct path where your conda environments are managed
-
-# Set CUDA environment variable
-export CUDA_HOME=$CUDA_PATH  # Assuming the module load sets CUDA_PATH
-export PATH=$CUDA_HOME/bin:$PATH
-
-# Set Triton cache directory to a non-NFS path
-export TRITON_CACHE_DIR=/users/jjls2000/local_cache
-mkdir -p $TRITON_CACHE_DIR
-
-################# Part-3 Define Experiment and Directories ####################
-
-# Define paths for the dataset and results directory
-DATA_PATH="/users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented"
-RESULTS_DIR="/users/jjls2000/sharedscratch/Dissertation/results/$(date +%Y%m%d_%H%M%S)"
+# Define the experiment name and results directory
+EXPERIMENT_NAME="slake_test_$(date +%Y%m%d_%H%M%S)"
+RESULTS_DIR="/users/jjls2000/sharedscratch/Dissertation/results/${EXPERIMENT_NAME}"
 mkdir -p "${RESULTS_DIR}"  # Ensure the directory exists
 
-# Define dataset file
-BBF_TRAIN_JSON="${DATA_PATH}/BBF_train.json"
+# Print out environment variables and paths for debugging
+echo "Results Directory: ${RESULTS_DIR}"
+echo "Experiment Name: ${EXPERIMENT_NAME}"
 
-# Ensure the Python script can find the module
-export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
+# Execute the Python script using the model and data files
+python /users/jjls2000/sharedscratch/LLaVA-Med/llava/eval/model_vqa.py \
+    --conv-mode mistral_instruct \
+    --model-path "microsoft/llava-med-v1.5-mistral-7b" \
+    --question-file /users/jjls2000/sharedscratch/LLaVA-Med/data/eval/llava_med_eval_qa50_qa.jsonl \
+    --image-folder "/users/jjls2000/sharedscratch/Dissertation/data/images" \
+    --answers-file "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl" \
+    --temperature 0.0
 
-# Model and prompt versions
-PROMPT_VERSION="llava_med_v1.5"
-MODEL_VERSION="/users/jjls2000/sharedscratch/Dissertation/Slake1.0-9epoch_delta"
-
-################# Part-4 Execute Fine-Tuning Script ####################
-
-# Execute the fine-tuning using the BBF dataset
-deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
-    --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero2.json \
-    --lora_enable True \
-    --model_name_or_path "$MODEL_VERSION" \
-    --version "$PROMPT_VERSION" \
-    --data_path "${BBF_TRAIN_JSON}" \
-    --image_folder /users/jjls2000/sharedscratch/Dissertation/data/images \
-    --vision_tower openai/clip-vit-large-patch14 \
-    --pretrain_mm_mlp_adapter /users/jjls2000/sharedscratch/Dissertation/Slake1.0-9epoch_delta/mm_projector.bin \
-    --mm_vision_select_layer -2 \
-    --mm_use_im_start_end False \
-    --mm_use_im_patch_token False \
-    --bf16 True \
-    --output_dir "${RESULTS_DIR}" \
-    --num_train_epochs 3 \
-    --per_device_train_batch_size 16 \
-    --per_device_eval_batch_size 4 \
-    --gradient_accumulation_steps 1 \
-    --evaluation_strategy "no" \
-    --save_strategy "steps" \
-    --save_steps 50000 \
-    --save_total_limit 1 \
-    --learning_rate 2e-5 \
-    --weight_decay 0. \
-    --warmup_ratio 0.03 \
-    --lr_scheduler_type "cosine" \
-    --logging_steps 100 \
-    --tf32 True \
-    --model_max_length 2048 \
-    --gradient_checkpointing True \
-    --lazy_preprocess True \
-    --dataloader_num_workers 4 \
-    --report_to none  # Change as per your tracking system, e.g., wandb
-
-echo "Training completed for BBF dataset."
-
-################# Part-5 Optional Post-Processing ####################
-
-# Check for output and log results, perhaps using Git or another method to manage results
-if [ -f "${RESULTS_DIR}/output_model.bin" ]; then
-    echo "Model successfully trained and saved."
+# Check the existence of the output file before committing to Git
+if [ -f "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl" ]; then
+    cd /users/jjls2000/sharedscratch/Dissertation
+    git add "${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl"
+    git commit -m "Add output for job ${SLURM_JOB_ID}"
+    git push origin main
 else
-    echo "Training failed or output model not saved."
+    echo "Output file not found: ${RESULTS_DIR}/answer-file-${SLURM_JOB_ID}.jsonl"
 fi
