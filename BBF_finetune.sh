@@ -19,6 +19,9 @@ source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/bin/activate
 # Install deepspeed if not already installed
 pip show deepspeed &> /dev/null || pip install deepspeed
 
+# Install the correct version of bitsandbytes if not already installed
+pip show bitsandbytes &> /dev/null || pip install git+https://github.com/TimDettmers/bitsandbytes.git
+
 # Set CUDA environment variables
 export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
 export PATH=$CUDA_HOME/bin:$CUDA_HOME/bin/bin:$PATH
