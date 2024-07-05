@@ -32,7 +32,7 @@ conda activate llavamed_new
 echo "Using Python from: $(which python)"
 python -c "import transformers; print('Transformers version:', transformers.__version__)"
 python -c "from transformers import LlamaConfig; print('LlamaConfig imported successfully')"
-python -c "from transformers import MptConfig; print('MptConfig imported successfully')"
+python -c "import torchvision; print('Torchvision version:', torchvision.__version__)"
 
 ################# Part-3 Execute Fine-Tuning Script ####################
 
@@ -61,14 +61,14 @@ python -c "from transformers import MptConfig; print('MptConfig imported success
     --per_device_train_batch_size 16 \
     --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 1 \
-    --evaluation_strategy "no" \
-    --save_strategy "steps" \
+    --evaluation_strategy no \
+    --save_strategy steps \
     --save_steps 50000 \
     --save_total_limit 1 \
     --learning_rate 2e-4 \
     --weight_decay 0. \
     --warmup_ratio 0.03 \
-    --lr_scheduler_type "cosine" \
+    --lr_scheduler_type cosine \
     --logging_steps 1 \
     --tf32 True \
     --model_max_length 2048 \
