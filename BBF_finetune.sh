@@ -17,6 +17,13 @@
 export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
 export PATH=$CUDA_HOME/bin:$PATH
 
+# Check if nvcc is available
+if ! command -v nvcc &> /dev/null
+then
+    echo "nvcc could not be found, please check your CUDA installation"
+    exit
+fi
+
 # Set Triton cache directory to a non-NFS path
 export TRITON_CACHE_DIR=/users/jjls2000/triton_cache
 mkdir -p $TRITON_CACHE_DIR
@@ -24,15 +31,11 @@ mkdir -p $TRITON_CACHE_DIR
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
-# Activate the conda environment
-source /users/jjls2000/.conda/etc/profile.d/conda.sh
-conda activate llavamed_new
-
 # Print environment setup for debugging
 echo "Using Python from: $(which python)"
 python -c "import transformers; print('Transformers version:', transformers.__version__)"
 python -c "from transformers import LlamaConfig; print('LlamaConfig imported successfully')"
-python -c "import torchvision; print('Torchvision version:', torchvision.__version__)"
+python -c "from transformers import MptConfig; print('MptConfig imported successfully')"
 
 ################# Part-3 Execute Fine-Tuning Script ####################
 
@@ -43,8 +46,8 @@ python -c "import torchvision; print('Torchvision version:', torchvision.__versi
     --lora_alpha 256 \
     --mm_projector_lr 2e-5 \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero3.json \
-    --model_name_or_path "lmsys/vicuna-13b-v1.5" \
-    --version v1 \
+    --model_name_or_path "microsoft/llava-med-v1.5-mistral-7b" \
+    --version llava_med_v1.5 \
     --data_path "/users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented/BBF_train.json" \
     --image_folder "/users/jjls2000/sharedscratch/Dissertation/data/imgs-1" \
     --vision_tower openai/clip-vit-large-patch14-336 \
@@ -61,20 +64,20 @@ python -c "import torchvision; print('Torchvision version:', torchvision.__versi
     --per_device_train_batch_size 16 \
     --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 1 \
-    --evaluation_strategy no \
-    --save_strategy steps \
+    --evaluation_strategy "no" \
+    --save_strategy "steps" \
     --save_steps 50000 \
     --save_total_limit 1 \
     --learning_rate 2e-4 \
     --weight_decay 0. \
     --warmup_ratio 0.03 \
-    --lr_scheduler_type cosine \
+    --lr_scheduler_type "cosine" \
     --logging_steps 1 \
     --tf32 True \
     --model_max_length 2048 \
     --gradient_checkpointing True \
-    --dataloader_num_workers 4 \
     --lazy_preprocess True \
+    --dataloader_num_workers 4 \
     --report_to wandb
 
 echo "Training completed for BBF dataset."
