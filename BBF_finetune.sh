@@ -24,10 +24,15 @@ mkdir -p $TRITON_CACHE_DIR
 # Ensure the Python script can find the module
 export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
 
+# Activate the conda environment
+source /users/jjls2000/.conda/etc/profile.d/conda.sh
+conda activate llavamed_new
+
 # Print environment setup for debugging
 echo "Using Python from: $(which python)"
 python -c "import transformers; print('Transformers version:', transformers.__version__)"
 python -c "from transformers import LlamaConfig; print('LlamaConfig imported successfully')"
+python -c "from transformers import MptConfig; print('MptConfig imported successfully')"
 
 ################# Part-3 Execute Fine-Tuning Script ####################
 
