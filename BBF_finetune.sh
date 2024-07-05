@@ -14,7 +14,7 @@
 ################# Part-2 Environment Setup ####################
 
 # Correct CUDA_HOME and PATH
-export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0/bin
+export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
 export PATH=$CUDA_HOME/bin:$PATH
 
 # Check if nvcc is available
