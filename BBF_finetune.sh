@@ -18,7 +18,7 @@ flight env activate gridware
 module load libs/nvidia-cuda/11.8.0/bin
 
 # Set CUDA environment variables
-export CUDA_HOME=/usr/local/cuda-11.8  # Adjust to the correct path if necessary
+export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0/bin
 export PATH=$CUDA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 
