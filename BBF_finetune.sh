@@ -11,8 +11,22 @@
 #SBATCH --gres=gpu:1  # GPU resource allocation
 #SBATCH -p gpu  # Partition
 
-################# Part-3 Execute Fine-Tuning Script ####################
+################# Part-2 Setup Environment ####################
+# Activate the Gridware environment and load the CUDA module
+source "${flight_ROOT:-/opt/flight}/etc/setup.sh"
+flight env activate gridware
+module load libs/nvidia-cuda/11.8.0/bin
 
+# Set CUDA environment variables
+export CUDA_HOME=/usr/local/cuda-11.8  # Adjust to the correct path if necessary
+export PATH=$CUDA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+
+# Debugging commands to verify setup
+echo "CUDA_HOME is set to: $CUDA_HOME"
+nvcc --version
+
+################# Part-3 Execute Fine-Tuning Script ####################
 # Use the absolute path to the deepspeed in your Conda environment
 /users/jjls2000/.conda/envs/llavamed_new/bin/deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
@@ -56,7 +70,6 @@
 echo "Training completed for BBF dataset."
 
 ################# Part-4 Optional Post-Processing ####################
-
 # Check for output and log results, perhaps using Git or another method to manage results
 RESULTS_DIR="/users/jjls2000/sharedscratch/Dissertation/results/$(date +%Y%m%d_%H%M%S)"
 if [ -f "${RESULTS_DIR}/output_model.bin" ]; then
