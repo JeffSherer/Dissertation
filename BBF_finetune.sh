@@ -11,32 +11,6 @@
 #SBATCH --gres=gpu:1  # GPU resource allocation
 #SBATCH -p gpu  # Partition
 
-################# Part-2 Environment Setup ####################
-
-# Correct CUDA_HOME and PATH
-export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
-export PATH=$CUDA_HOME/bin:$PATH
-
-# Check if nvcc is available
-if ! command -v nvcc &> /dev/null
-then
-    echo "nvcc could not be found, please check your CUDA installation"
-    exit
-fi
-
-# Set Triton cache directory to a non-NFS path
-export TRITON_CACHE_DIR=/users/jjls2000/triton_cache
-mkdir -p $TRITON_CACHE_DIR
-
-# Ensure the Python script can find the module
-export PYTHONPATH="/users/jjls2000/sharedscratch/Dissertation:${PYTHONPATH}"
-
-# Print environment setup for debugging
-echo "Using Python from: $(which python)"
-python -c "import transformers; print('Transformers version:', transformers.__version__)"
-python -c "from transformers import LlamaConfig; print('LlamaConfig imported successfully')"
-python -c "from transformers import MptConfig; print('MptConfig imported successfully')"
-
 ################# Part-3 Execute Fine-Tuning Script ####################
 
 # Use the absolute path to the deepspeed in your Conda environment
