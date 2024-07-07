@@ -14,9 +14,12 @@
 ################# Part-2 Setup Environment ####################
 
 # Set CUDA environment variables
-export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0/bin
-export PATH=$CUDA_HOME/bin:$PATH
+export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
+export PATH=$CUDA_HOME/bin/bin:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+export CUDNN_INCLUDE_DIR=$CUDA_HOME/include
+export CUDNN_LIB_DIR=$CUDA_HOME/lib64
+export CUDA_TOOLKIT_ROOT_DIR=$CUDA_HOME
 
 # Debugging commands to verify setup
 echo "CUDA_HOME is set to: $CUDA_HOME"
