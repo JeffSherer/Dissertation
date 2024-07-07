@@ -1,8 +1,5 @@
-# test_llava.py
-from llava.model.language_model.llava_llama import LlavaLlamaForCausalLM
+import torch
+from flash_attn.flash_attn_interface import flash_attn_func
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
-def test_llava():
-    print("LLaVA import successful!")
-
-if __name__ == "__main__":
-    test_llava()
+print("Flash Attention and Transformers import successful!")
