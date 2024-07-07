@@ -12,10 +12,6 @@
 #SBATCH -p gpu  # Partition
 
 ################# Part-2 Setup Environment ####################
-# Activate the Gridware environment and load the CUDA module
-source "${flight_ROOT:-/opt/flight}/etc/setup.sh"
-flight env activate gridware
-module load libs/nvidia-cuda/11.8.0/bin
 
 # Set CUDA environment variables
 export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0/bin
