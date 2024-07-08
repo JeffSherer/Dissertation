@@ -15,7 +15,7 @@
 
 # Set CUDA environment variables
 export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
-export PATH=$CUDA_HOME/bin/bin:$PATH
+export PATH=$CUDA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 export CUDNN_INCLUDE_DIR=$CUDA_HOME/include
 export CUDNN_LIB_DIR=$CUDA_HOME/lib64
@@ -26,12 +26,7 @@ echo "CUDA_HOME is set to: $CUDA_HOME"
 nvcc --version
 
 # Create necessary directories if they don't exist
-mkdir -p /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.6-mistral-7b
-
-# Download the mm_projector.bin file if it doesn't already exist
-if [ ! -f /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.6-mistral-7b/mm_projector.bin ]; then
-    wget -O /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.6-mistral-7b/mm_projector.bin https://huggingface.co/liuhaotian/llava-v1.6-mistral-7b/resolve/main/mm_projector.bin
-fi
+mkdir -p /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b
 
 ################# Part-3 Execute Fine-Tuning Script ####################
 # Use the absolute path to the deepspeed in your Conda environment
@@ -41,8 +36,8 @@ fi
     --lora_alpha 256 \
     --mm_projector_lr 2e-5 \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero3.json \
-    --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.6-mistral-7b \
-    --version llava_v1.6 \
+    --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b \
+    --version llava_v1.5 \
     --data_path "/users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented/BBF_train.json" \
     --image_folder "/users/jjls2000/sharedscratch/Dissertation/data/imgs-1" \
     --vision_tower openai/clip-vit-large-patch14-336 \
