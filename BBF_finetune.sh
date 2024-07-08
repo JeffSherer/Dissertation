@@ -25,14 +25,6 @@ export CUDA_TOOLKIT_ROOT_DIR=$CUDA_HOME
 echo "CUDA_HOME is set to: $CUDA_HOME"
 nvcc --version
 
-# Create necessary directories if they don't exist
-mkdir -p /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b
-
-# Download the mm_projector.bin file if it doesn't already exist
-if [ ! -f /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b/mm_projector.bin ]; then
-    wget -O /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b/mm_projector.bin https://huggingface.co/liuhaotian/llava-v1.5-7b/resolve/main/mm_projector.bin
-fi
-
 ################# Part-3 Execute Fine-Tuning Script ####################
 # Use the absolute path to the deepspeed in your Conda environment
 /users/jjls2000/.conda/envs/llavamed_new/bin/deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
