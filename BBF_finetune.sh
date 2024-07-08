@@ -15,7 +15,7 @@
 
 # Set CUDA environment variables
 export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
-export PATH=$CUDA_HOME/bin:$PATH
+export PATH=$CUDA_HOME/bin/bin:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 export CUDNN_INCLUDE_DIR=$CUDA_HOME/include
 export CUDNN_LIB_DIR=$CUDA_HOME/lib64
@@ -27,10 +27,6 @@ nvcc --version
 
 ################# Part-3 Execute Fine-Tuning Script ####################
 # Use the absolute path to the deepspeed in your Conda environment
-# Set the path to the extracted mm_projector.bin files
-MM_PROJECTOR_PATH="/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b/mm_projector_extracted/mm_projector/data.pkl"
-
-# Adjust your deepspeed command to use the new path
 /users/jjls2000/.conda/envs/llavamed_new/bin/deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --lora_r 128 \
@@ -42,7 +38,7 @@ MM_PROJECTOR_PATH="/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-
     --data_path "/users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented/BBF_train.json" \
     --image_folder "/users/jjls2000/sharedscratch/Dissertation/data/imgs-1" \
     --vision_tower openai/clip-vit-large-patch14-336 \
-    --pretrain_mm_mlp_adapter "${MM_PROJECTOR_PATH}" \
+    --pretrain_mm_mlp_adapter "/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b/mm_projector_extracted/mm_projector/data.pkl" \
     --mm_projector_type mlp2x_gelu \
     --mm_vision_select_layer -2 \
     --mm_use_im_start_end False \
@@ -71,7 +67,6 @@ MM_PROJECTOR_PATH="/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-
     --report_to wandb
 
 echo "Training completed for BBF dataset."
-
 
 ################# Part-4 Optional Post-Processing ####################
 # Check for output and log results, perhaps using Git or another method to manage results
