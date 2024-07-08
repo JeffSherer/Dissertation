@@ -28,7 +28,7 @@ nvcc --version
 ################# Part-3 Execute Fine-Tuning Script ####################
 # Use the absolute path to the deepspeed in your Conda environment
 # Set the path to the extracted mm_projector.bin files
-MM_PROJECTOR_PATH="/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b/mm_projector_extracted/mm_projector"
+MM_PROJECTOR_PATH="/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b/mm_projector_extracted/mm_projector/data.pkl"
 
 # Adjust your deepspeed command to use the new path
 /users/jjls2000/.conda/envs/llavamed_new/bin/deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
