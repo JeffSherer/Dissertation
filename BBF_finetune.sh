@@ -27,6 +27,10 @@ nvcc --version
 
 ################# Part-3 Execute Fine-Tuning Script ####################
 # Use the absolute path to the deepspeed in your Conda environment
+# Set the path to the extracted mm_projector.bin files
+MM_PROJECTOR_PATH="/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b/mm_projector_extracted/mm_projector"
+
+# Adjust your deepspeed command to use the new path
 /users/jjls2000/.conda/envs/llavamed_new/bin/deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --lora_r 128 \
@@ -38,7 +42,7 @@ nvcc --version
     --data_path "/users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented/BBF_train.json" \
     --image_folder "/users/jjls2000/sharedscratch/Dissertation/data/imgs-1" \
     --vision_tower openai/clip-vit-large-patch14-336 \
-    --pretrain_mm_mlp_adapter "/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b/mm_projector.bin" \
+    --pretrain_mm_mlp_adapter "${MM_PROJECTOR_PATH}" \
     --mm_projector_type mlp2x_gelu \
     --mm_vision_select_layer -2 \
     --mm_use_im_start_end False \
@@ -67,6 +71,7 @@ nvcc --version
     --report_to wandb
 
 echo "Training completed for BBF dataset."
+
 
 ################# Part-4 Optional Post-Processing ####################
 # Check for output and log results, perhaps using Git or another method to manage results
