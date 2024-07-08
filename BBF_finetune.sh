@@ -35,6 +35,7 @@ fi
 
 ################# Part-3 Execute Fine-Tuning Script ####################
 # Use the absolute path to the deepspeed in your Conda environment
+
 /users/jjls2000/.conda/envs/llavamed_new/bin/deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --lora_r 128 \
