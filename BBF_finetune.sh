@@ -26,28 +26,27 @@ echo "CUDA_HOME is set to: $CUDA_HOME"
 nvcc --version
 
 # Create necessary directories if they don't exist
-mkdir -p /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-llava-llavammed-7b-pretrain
+mkdir -p /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.6-mistral-7b
 
 # Download the mm_projector.bin file if it doesn't already exist
-if [ ! -f /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-llava-llavammed-7b-pretrain/mm_projector.bin ]; then
-    wget -O /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-llava-llavammed-7b-pretrain/mm_projector.bin https://huggingface.co/liuhaotian/llava-v1.5-7b/resolve/main/mm_projector.bin
+if [ ! -f /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.6-mistral-7b/mm_projector.bin ]; then
+    wget -O /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.6-mistral-7b/mm_projector.bin https://huggingface.co/liuhaotian/llava-v1.6-mistral-7b/resolve/main/mm_projector.bin
 fi
 
 ################# Part-3 Execute Fine-Tuning Script ####################
 # Use the absolute path to the deepspeed in your Conda environment
-
 /users/jjls2000/.conda/envs/llavamed_new/bin/deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --lora_r 128 \
     --lora_alpha 256 \
     --mm_projector_lr 2e-5 \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero3.json \
-    --model_name_or_path "microsoft/llava-med-v1.5-mistral-7b" \
-    --version llava_med_v1.5 \
+    --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.6-mistral-7b \
+    --version llava_v1.6 \
     --data_path "/users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented/BBF_train.json" \
     --image_folder "/users/jjls2000/sharedscratch/Dissertation/data/imgs-1" \
     --vision_tower openai/clip-vit-large-patch14-336 \
-    --pretrain_mm_mlp_adapter "/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-llava-llavammed-7b-pretrain/mm_projector.bin" \
+    --pretrain_mm_mlp_adapter "/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.6-mistral-7b/mm_projector.bin" \
     --mm_projector_type mlp2x_gelu \
     --mm_vision_select_layer -2 \
     --mm_use_im_start_end False \
