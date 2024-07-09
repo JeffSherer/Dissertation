@@ -24,11 +24,9 @@ export CUDA_TOOLKIT_ROOT_DIR=$CUDA_HOME
 # Debugging commands to verify setup
 echo "CUDA_HOME is set to: $CUDA_HOME"
 nvcc --version
-
-# Check GPU availability
 nvidia-smi
 
-# Check CUDA in Python
+# Check GPU availability with Python
 python -c "import torch; print('CUDA available:', torch.cuda.is_available())"
 
 # Create necessary directories if they don't exist
