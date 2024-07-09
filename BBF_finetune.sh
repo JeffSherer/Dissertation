@@ -11,7 +11,7 @@
 ## Job name
 #SBATCH -J gpu-job
 ## Run time: "hours:minutes:seconds", "days-hours"
-#SBATCH --time=00:10:00
+#SBATCH --time=24:10:00
 ## Memory limit (in megabytes)
 #SBATCH --mem=32G
 ## GPU requirements
