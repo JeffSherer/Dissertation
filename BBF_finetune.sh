@@ -1,6 +1,4 @@
 #!/bin/bash -l
-
-################# Part-1 Slurm directives ####################
 #SBATCH -D /users/jjls2000/sharedscratch/Dissertation  # Set working directory
 #SBATCH --export=ALL
 #SBATCH -o llava-med-test-%j.out  # Standard output file
@@ -10,8 +8,6 @@
 #SBATCH --mem=32G  # Memory required
 #SBATCH --gres=gpu:1  # GPU resource allocation
 #SBATCH -p gpu  # Partition
-
-################# Part-2 Setup Environment ####################
 
 # Set CUDA environment variables
 export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
@@ -24,16 +20,8 @@ export CUDA_TOOLKIT_ROOT_DIR=$CUDA_HOME
 # Debugging commands to verify setup
 echo "CUDA_HOME is set to: $CUDA_HOME"
 nvcc --version
-nvidia-smi
 
-# Check GPU availability with Python
-python -c "import torch; print('CUDA available:', torch.cuda.is_available())"
-
-# Create necessary directories if they don't exist
-mkdir -p /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b
-
-################# Part-3 Execute Fine-Tuning Script ####################
-# Use the absolute path to the deepspeed in your Conda environment
+# Execute the fine-tuning script
 /users/jjls2000/.conda/envs/llavamed_new/bin/deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --lora_r 128 \
@@ -75,7 +63,7 @@ mkdir -p /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b
 
 echo "Training completed for BBF dataset."
 
-# Check for output and log results
+# Optional post-processing
 RESULTS_DIR="/users/jjls2000/sharedscratch/Dissertation/results/$(date +%Y%m%d_%H%M%S)"
 if [ -f "${RESULTS_DIR}/output_model.bin" ]; then
     echo "Model successfully trained and saved."
