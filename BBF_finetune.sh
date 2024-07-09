@@ -23,7 +23,8 @@
 #===============================
 #  Load Necessary Modules
 #-------------------------------
-module load cuda/11.8
+# Load the correct CUDA module
+module load libs/nvidia-cuda/11.8.0
 module load mpi/openmpi/4.1.5/gcc-11.4.1
 
 #==============================
@@ -32,8 +33,19 @@ module load mpi/openmpi/4.1.5/gcc-11.4.1
 source activate llavamed_new
 
 #==============================
+#  Ensure mpi4py is installed
+#------------------------------
+conda install mpi4py -y
+
+#==============================
 #  Export Necessary Paths
 #------------------------------
+# Manually set CUDA_HOME and update PATH
+export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
+export PATH=$CUDA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+
+# Set Python path for llava module
 export PYTHONPATH=$PYTHONPATH:/users/jjls2000/sharedscratch/Dissertation/llava
 
 #==============================
