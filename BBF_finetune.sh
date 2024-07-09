@@ -1,27 +1,58 @@
 #!/bin/bash -l
-#SBATCH -D /users/jjls2000/sharedscratch/Dissertation  # Set working directory
-#SBATCH --export=ALL
-#SBATCH -o llava-med-test-%j.out  # Standard output file
-#SBATCH -e llava-med-test-%j.err  # Standard error file
-#SBATCH -J slake-test  # Job name
-#SBATCH --time=02:00:00  # Job run time
-#SBATCH --mem=32G  # Memory required
-#SBATCH --gres=gpu:1  # GPU resource allocation
-#SBATCH -p gpu  # Partition
 
-# Set CUDA environment variables
-export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
-export PATH=$CUDA_HOME/bin:$PATH
-export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
-export CUDNN_INCLUDE_DIR=$CUDA_HOME/include
-export CUDNN_LIB_DIR=$CUDA_HOME/lib64
-export CUDA_TOOLKIT_ROOT_DIR=$CUDA_HOME
+################# Part-1 Slurm directives ####################
+## Working dir
+#SBATCH -D /users/username  # Replace with your actual working directory
+## Environment variables
+#SBATCH --export=ALL
+## Output and Error Files
+#SBATCH -o job-%j.output
+#SBATCH -e job-%j.error
+## Job name
+#SBATCH -J gpu-job
+## Run time: "hours:minutes:seconds", "days-hours"
+#SBATCH --time=01:00:00
+## Memory limit (in megabytes)
+#SBATCH --mem=32G
+## GPU requirements
+#SBATCH --gres=gpu:1
+## Specify partition
+#SBATCH -p gpu
+
+################# Part-2 Shell script ####################
+#===============================
+#  Activate Flight Environment
+#-------------------------------
+source "${flight_ROOT:-/opt/flight}"/etc/setup.sh
+
+#==============================
+#  Activate Package Ecosystem
+#------------------------------
+# Ensure correct environment is activated
+flight env activate gridware
+
+#===========================
+#  Create results directory
+#---------------------------
+RESULTS_DIR="$(pwd)/${SLURM_JOB_NAME}-outputs/${SLURM_JOB_ID}"
+echo "Your results will be stored in: $RESULTS_DIR"
+mkdir -p "$RESULTS_DIR"
+
+#===============================
+#  Application launch commands
+#-------------------------------
+echo "Executing job commands, current working directory is $(pwd)"
+
+# Load necessary modules
+module load mpi/openmpi
+module load cuda/11.8
 
 # Debugging commands to verify setup
 echo "CUDA_HOME is set to: $CUDA_HOME"
 nvcc --version
+nvidia-smi
 
-# Execute the fine-tuning script
+# Run your training script
 /users/jjls2000/.conda/envs/llavamed_new/bin/deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --lora_r 128 \
