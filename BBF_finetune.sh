@@ -1,19 +1,16 @@
 #!/bin/bash -l
 
-################# Part-1 Slurm directives ####################
-#SBATCH -D /users/jjls2000/sharedscratch/Dissertation  # Set working directory
+#SBATCH -D /users/jjls2000/sharedscratch/Dissertation
 #SBATCH --export=ALL
-#SBATCH -o llava-med-test-%j.out  # Standard output file
-#SBATCH -e llava-med-test-%j.err  # Standard error file
-#SBATCH -J slake-test  # Job name
-#SBATCH --time=02:00:00  # Job run time
-#SBATCH --mem=32G  # Memory required
-#SBATCH --gres=gpu:1  # GPU resource allocation
-#SBATCH -p gpu  # Partition
+#SBATCH -o llava-med-test-%j.out
+#SBATCH -e llava-med-test-%j.err
+#SBATCH -J slake-test
+#SBATCH --time=02:00:00
+#SBATCH --mem=32G
+#SBATCH --gres=gpu:1
+#SBATCH -p gpu
 
-################# Part-2 Setup Environment ####################
-
-# Set CUDA environment variables
+# Setup environment
 export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
 export PATH=$CUDA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
@@ -21,15 +18,20 @@ export CUDNN_INCLUDE_DIR=$CUDA_HOME/include
 export CUDNN_LIB_DIR=$CUDA_HOME/lib64
 export CUDA_TOOLKIT_ROOT_DIR=$CUDA_HOME
 
-# Debugging commands to verify setup
+# Debugging commands
 echo "CUDA_HOME is set to: $CUDA_HOME"
 nvcc --version
+python -c "import torch; print('CUDA available:', torch.cuda.is_available())"
 
-# Create necessary directories if they don't exist
-mkdir -p /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b
+# Verify paths
+for path in "/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b" "/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b/mm_projector_extracted/mm_projector/data.pkl"; do
+    if [ ! -e "$path" ]; then
+        echo "Error: $path does not exist."
+        exit 1
+    fi
+done
 
-################# Part-3 Execute Fine-Tuning Script ####################
-# Use the absolute path to the deepspeed in your Conda environment
+# Execute fine-tuning script
 /users/jjls2000/.conda/envs/llavamed_new/bin/deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --lora_r 128 \
@@ -71,8 +73,7 @@ mkdir -p /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b
 
 echo "Training completed for BBF dataset."
 
-################# Part-4 Optional Post-Processing ####################
-# Check for output and log results, perhaps using Git or another method to manage results
+# Check for output and log results
 RESULTS_DIR="/users/jjls2000/sharedscratch/Dissertation/results/$(date +%Y%m%d_%H%M%S)"
 if [ -f "${RESULTS_DIR}/output_model.bin" ]; then
     echo "Model successfully trained and saved."
