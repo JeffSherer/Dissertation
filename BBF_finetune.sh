@@ -11,19 +11,31 @@
 ## Job name
 #SBATCH -J gpu-job
 ## Run time: "hours:minutes:seconds", "days-hours"
-#SBATCH --time=01:00:00
+#SBATCH --time=00:10:00
 ## Memory limit (in megabytes)
-#SBATCH --mem=32000
+#SBATCH --mem=32G
 ## GPU requirements
-#SBATCH --gres=gpu:1
+#SBATCH --gres gpu:1
 ## Specify partition
 #SBATCH -p gpu
 
 ################# Part-2 Shell script ####################
 #===============================
-#  Execute the Training Script
+#  Activate Flight Environment
 #-------------------------------
-python /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
+source "${flight_ROOT:-/opt/flight}"/etc/setup.sh
+flight env activate gridware
+
+# Activate Conda environment
+conda activate llavamed_new
+
+# Ensure CUDA paths are correct
+export CUDA_HOME=/usr/local/cuda-11.8
+export PATH=$CUDA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+
+# Run the training script
+/users/jjls2000/.conda/envs/llavamed_new/bin/python /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --lora_r 128 \
     --lora_alpha 256 \
