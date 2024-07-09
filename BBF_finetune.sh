@@ -27,6 +27,7 @@ source "${flight_ROOT:-/opt/flight}"/etc/setup.sh
 flight env activate gridware
 
 # Activate Conda environment
+source /users/jjls2000/.bashrc
 conda activate llavamed_new
 
 # Ensure CUDA paths are correct
@@ -34,8 +35,12 @@ export CUDA_HOME=/usr/local/cuda-11.8
 export PATH=$CUDA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 
-# Run the training script
-/users/jjls2000/.conda/envs/llavamed_new/bin/python /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
+# Set MPI Library Path
+export MPI_LIB_PATH=$(find / -name "libmpi.so.12" 2>/dev/null | xargs dirname)
+export LD_LIBRARY_PATH=$MPI_LIB_PATH:$LD_LIBRARY_PATH
+
+# Run the training script with deepspeed
+deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --lora_r 128 \
     --lora_alpha 256 \
@@ -59,17 +64,18 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
     --per_device_train_batch_size 16 \
     --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 1 \
-    --evaluation_strategy no \
-    --save_strategy steps \
+    --evaluation_strategy "no" \
+    --save_strategy "steps" \
     --save_steps 50000 \
     --save_total_limit 1 \
     --learning_rate 2e-4 \
     --weight_decay 0. \
     --warmup_ratio 0.03 \
-    --lr_scheduler_type cosine \
+    --lr_scheduler_type "cosine" \
     --logging_steps 1 \
     --tf32 True \
     --model_max_length 2048 \
     --gradient_checkpointing True \
+    --dataloader_num_workers 4 \
     --lazy_preprocess True \
     --report_to wandb
