@@ -46,12 +46,11 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_alpha 256 \
     --mm_projector_lr 2e-5 \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero3.json \
-    --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b \
-    --version llava_v1.5 \
-    --data_path /users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented/BBF_train.json \
-    --image_folder /users/jjls2000/sharedscratch/Dissertation/data/imgs-1 \
+    --model_name_or_path liuhaotian/llava-v1.5-13b \
+    --version v1 \
+    --data_path /users/jjls2000/sharedscratch/Dissertation/playground/data/llava_v1_5_mix665k.json \
+    --image_folder /users/jjls2000/sharedscratch/Dissertation/playground/data \
     --vision_tower openai/clip-vit-large-patch14-336 \
-    --pretrain_mm_mlp_adapter /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b/mm_projector_extracted/mm_projector/data.pkl \
     --mm_projector_type mlp2x_gelu \
     --mm_vision_select_layer -2 \
     --mm_use_im_start_end False \
@@ -59,7 +58,7 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --image_aspect_ratio pad \
     --group_by_modality_length True \
     --bf16 True \
-    --output_dir /users/jjls2000/sharedscratch/Dissertation/results/20240709_214950 \
+    --output_dir /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-13b-task-lora \
     --num_train_epochs 1 \
     --per_device_train_batch_size 16 \
     --per_device_eval_batch_size 4 \
