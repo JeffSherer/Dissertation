@@ -2,13 +2,13 @@
 
 ################# Part-1 Slurm directives ####################
 # Working dir
-#SBATCH -D /users/jjls2000/sharedscratch/Diss
+#SBATCH -D /users/jjls2000/sharedscratch/Dissertation
 # Environment variables
 #SBATCH --export=ALL
 # Output and Error Files
-#SBATCH -o /users/jjls2000/sharedscratch/Diss/llava-med-test-%j.out
+#SBATCH -o /users/jjls2000/sharedscratch/Dissertation/llava-med-test-%j.out
 # Error File
-#SBATCH -e /users/jjls2000/sharedscratch/Diss/llava-med-test-%j.err
+#SBATCH -e /users/jjls2000/sharedscratch/Dissertation/llava-med-test-%j.err
 # Job name
 #SBATCH -J gpu-job
 # Run time: "hours:minutes:seconds", "days-hours"
@@ -23,7 +23,7 @@
 ################# Part-2 Shell script ####################
 # Activate Conda environment
 source /users/jjls2000/.bashrc
-conda activate llava_med
+conda activate llavamed_new
 
 # Ensure CUDA paths are correct
 export CUDA_HOME=/usr/local/cuda-11.8
@@ -35,18 +35,18 @@ export MPI_LIB_PATH=$(find / -name "libmpi.so.12" 2>/dev/null | xargs dirname)
 export LD_LIBRARY_PATH=$MPI_LIB_PATH:$LD_LIBRARY_PATH
 
 # Run the training script with deepspeed
-deepspeed /users/jjls2000/sharedscratch/Diss/llava/train/train_mem.py \
+deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
     --lora_r 128 \
     --lora_alpha 256 \
     --mm_projector_lr 2e-5 \
-    --deepspeed /users/jjls2000/sharedscratch/Diss/scripts/zero3.json \
-    --model_name_or_path /users/jjls2000/sharedscratch/Diss/checkpoints/llava-v1.5-7b \
+    --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero3.json \
+    --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b \
     --version llava_v1.5 \
-    --data_path /users/jjls2000/sharedscratch/Diss/Slake1.0/augmented/BBF_train.json \
-    --image_folder /users/jjls2000/sharedscratch/Diss/data/imgs-1 \
+    --data_path /users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented/BBF_train.json \
+    --image_folder /users/jjls2000/sharedscratch/Dissertation/data/imgs-1 \
     --vision_tower openai/clip-vit-large-patch14-336 \
-    --pretrain_mm_mlp_adapter /users/jjls2000/sharedscratch/Diss/checkpoints/llava-v1.5-7b/mm_projector_extracted/mm_projector/data.pkl \
+    --pretrain_mm_mlp_adapter /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b/mm_projector_extracted/mm_projector/data.pkl \
     --mm_projector_type mlp2x_gelu \
     --mm_vision_select_layer -2 \
     --mm_use_im_start_end False \
@@ -54,7 +54,7 @@ deepspeed /users/jjls2000/sharedscratch/Diss/llava/train/train_mem.py \
     --image_aspect_ratio pad \
     --group_by_modality_length True \
     --bf16 True \
-    --output_dir /users/jjls2000/sharedscratch/Diss/results/20240709_214950 \
+    --output_dir /users/jjls2000/sharedscratch/Dissertation/results/20240709_214950 \
     --num_train_epochs 1 \
     --per_device_train_batch_size 16 \
     --per_device_eval_batch_size 4 \
