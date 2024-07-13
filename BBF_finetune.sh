@@ -23,7 +23,7 @@
 ################# Part-2 Shell script ####################
 # Activate Conda environment
 source /users/jjls2000/.bashrc
-conda activate llavamed_new
+conda activate llava_med
 
 # Ensure CUDA paths are correct
 export CUDA_HOME=/usr/local/cuda-11.8
