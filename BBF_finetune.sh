@@ -19,15 +19,14 @@
 #SBATCH --gres gpu:1
 # Specify partition
 #SBATCH -p gpu
-
 ################# Part-2 Shell script ####################
 # Activate Conda environment
 source /users/jjls2000/.bashrc
 conda activate llava_med
 
 # Ensure CUDA paths are correct
-export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
-export PATH=$CUDA_HOME/bin/bin:$PATH
+export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0/bin
+export PATH=$CUDA_HOME:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:/users/jjls2000/.local/lib/python3.10/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
 
 # Run the training script with deepspeed
@@ -70,3 +69,4 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --dataloader_num_workers 4 \
     --lazy_preprocess True \
     --report_to wandb
+
