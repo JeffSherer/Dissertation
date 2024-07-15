@@ -1,24 +1,25 @@
 #!/bin/bash -l
 
 ################# Part-1 Slurm directives ####################
-# Working dir
+## Working dir
 #SBATCH -D /users/jjls2000/sharedscratch/Dissertation
-# Environment variables
+## Environment variables
 #SBATCH --export=ALL
-# Output and Error Files
+## Output and Error Files
 #SBATCH -o /users/jjls2000/sharedscratch/Dissertation/llava-med-test-%j.out
-# Error File
+## Error File
 #SBATCH -e /users/jjls2000/sharedscratch/Dissertation/llava-med-test-%j.err
-# Job name
-#SBATCH -J gpu-job
-# Run time: "hours:minutes:seconds", "days-hours"
+## Job name
+#SBATCH -J llava-job
+## Run time: "hours:minutes:seconds", "days-hours"
 #SBATCH --time=24:10:00
-# Memory limit (in megabytes)
+## Memory limit (in megabytes)
 #SBATCH --mem=32G
-# GPU requirements
-#SBATCH --gres gpu:1
-# Specify partition
+## GPU requirements
+#SBATCH --gres=gpu:1
+## Specify partition
 #SBATCH -p gpu
+
 ################# Part-2 Shell script ####################
 # Activate Conda environment
 source /users/jjls2000/.bashrc
