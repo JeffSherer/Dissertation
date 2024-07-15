@@ -1,5 +1,7 @@
-data/pmc/PMC6484696.tar.gz
-data/pmc/PMC6484696/mmc1.mp4
-data/pmc/PMC6484696/mmc2.mp4
-data/pmc/PMC6484696/mmc3.mp4
-data/pmc/PMC6484696/mmc4.mp4
+# Ignore all error and output logs
+*.err
+*.out
+
+# Ignore other non-essential files
+.DS_Store
+llava-med-test-*
