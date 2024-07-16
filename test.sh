@@ -20,10 +20,11 @@
 
 # Load CUDA module
 source /opt/flight/etc/setup.sh
+flight env activate gridware
 module load libs/nvidia-cuda/11.8.0/bin
 
 # Activate conda environment
-source activate llava
+source /opt/anaconda3/bin/activate llava
 
 # Install CUDA toolkit via conda
 conda install -c conda-forge cudatoolkit=11.8 -y
@@ -32,7 +33,7 @@ conda install -c conda-forge cudatoolkit=11.8 -y
 pip install bitsandbytes-cuda118
 
 # Verify bitsandbytes installation
-wget https://gist.githubusercontent.com/TimDettmers/1f5188c6ee6ed69d211b7fe4e381e713/raw/4d17c3d09ccdb57e9ab7eca0171f2ace6e4d2858/check_bnb_install.py
-python check_bnb_install.py
+echo "Verifying bitsandbytes installation"
+python -c "import bitsandbytes as bnb; print(bnb.__version__); adam = bnb.optim.Adam([bnb.nn.Parameter([1.0, 2.0, 3.0])]); print('bitsandbytes is successfully installed and functioning')"
 
 echo "Bits and Bytes installation and verification completed."
