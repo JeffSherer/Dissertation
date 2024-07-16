@@ -1,10 +1,22 @@
 #!/bin/bash
-#SBATCH --job-name=install-bitsandbytes
-#SBATCH --gres=gpu:1              # Request GPU generic resources; adjust if a different GPU count or type is available
-#SBATCH --mem=8G                  # Memory requirement; increase or decrease based on job needs and availability
-#SBATCH --time=0-00:30            # Time limit hrs:min:sec
-#SBATCH --output=install_bnb_%j.log  # Standard output and error log
-#SBATCH --partition=gpu           # Make sure to specify the correct partition that has GPU resources
+## Working dir
+#SBATCH -D /users/jjls2000/sharedscratch/Dissertation
+## Environment variables
+#SBATCH --export=ALL
+## Output and Error Files
+#SBATCH -o /users/jjls2000/sharedscratch/Dissertation/llava-med-test-%j.out
+## Error File
+#SBATCH -e /users/jjls2000/sharedscratch/Dissertation/llava-med-test-%j.err
+## Job name
+#SBATCH -J llava-job
+## Run time: "hours:minutes:seconds", "days-hours"
+#SBATCH --time=24:10:00
+## Memory limit (in megabytes)
+#SBATCH --mem=32G
+## GPU requirements
+#SBATCH --gres=gpu:1
+## Specify partition
+#SBATCH -p gpu
 
 module load libs/nvidia-cuda/11.8.0/bin  # Load CUDA 11.8 module
 
