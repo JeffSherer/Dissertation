@@ -38,6 +38,13 @@ else
     exit 1
 fi
 
+# Check if module command is available
+if ! command -v module &> /dev/null; then
+    echo "module command not found, skipping module load"
+else
+    module load libs/nvidia-cuda/11.8.0/bin
+fi
+
 # Set PYTHONPATH to include llava directory
 export PYTHONPATH=/users/jjls2000/sharedscratch/Dissertation:$PYTHONPATH
 
@@ -47,6 +54,9 @@ nvidia-smi
 # Additional diagnostic commands
 echo "Running on node(s): $SLURM_JOB_NODELIST"
 echo "Using GPU device(s): $CUDA_VISIBLE_DEVICES"
+
+# Install necessary dependencies if not already installed
+pip install -r /users/jjls2000/sharedscratch/Dissertation/requirements.txt
 
 # Run the training script with deepspeed
 deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
