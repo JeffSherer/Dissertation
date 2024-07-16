@@ -21,9 +21,10 @@
 #SBATCH -p gpu
 
 ################# Part-2 Shell script ####################
+# Ensure Conda is initialized
+source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/bin/etc/profile.d/conda.sh
+
 # Activate Conda environment
-source /users/jjls2000/.bashrc
-conda init bash
 conda activate llava
 
 # Ensure CUDA paths are correct
@@ -84,4 +85,3 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --dataloader_num_workers 4 \
     --lazy_preprocess True \
     --report_to wandb
-
