@@ -24,13 +24,14 @@ flight env activate gridware
 module load libs/nvidia-cuda/11.8.0/bin
 
 # Activate conda environment
-source /opt/anaconda3/bin/activate llava
+source /opt/anaconda3/etc/profile.d/conda.sh
+conda activate llava
 
 # Install CUDA toolkit via conda
 conda install -c conda-forge cudatoolkit=11.8 -y
 
-# Install bitsandbytes
-pip install bitsandbytes-cuda118
+# Install bitsandbytes for the correct CUDA version
+pip install bitsandbytes
 
 # Verify bitsandbytes installation
 echo "Verifying bitsandbytes installation"
