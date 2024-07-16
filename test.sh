@@ -30,7 +30,7 @@ CONDA_PATH=$(conda info --base)/etc/profile.d/conda.sh
 source $CONDA_PATH
 
 # Activate the conda environment
-conda activate llava
+conda activate llava_med
 
 # Install bitsandbytes
 pip install bitsandbytes
