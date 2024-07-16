@@ -21,11 +21,8 @@
 #SBATCH -p gpu
 
 ################# Part-2 Shell script ####################
-# Load Anaconda and initialize the shell
-module load apps/anaconda3/2023.03/bin
-source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/bin/etc/profile.d/conda.sh
-
 # Activate Conda environment
+source /users/jjls2000/.bashrc
 conda activate llava
 
 # Ensure CUDA paths are correct
@@ -42,9 +39,6 @@ nvidia-smi
 # Additional diagnostic commands
 echo "Running on node(s): $SLURM_JOB_NODELIST"
 echo "Using GPU device(s): $CUDA_VISIBLE_DEVICES"
-
-# Ensure pydantic is installed
-pip install pydantic
 
 # Run the training script with deepspeed
 deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
