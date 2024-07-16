@@ -10,7 +10,7 @@
 ## Job name
 #SBATCH -J llava-job
 ## Run time: "hours:minutes:seconds", "days-hours"
-#SBATCH --time=24:10:00
+#SBATCH --time=01:00:00
 ## Memory limit (in megabytes)
 #SBATCH --mem=32G
 ## GPU requirements
@@ -18,12 +18,21 @@
 ## Specify partition
 #SBATCH -p gpu
 
-module load libs/nvidia-cuda/11.8.0/bin  # Load CUDA 11.8 module
+# Load CUDA module
+source /opt/flight/etc/setup.sh
+module load libs/nvidia-cuda/11.8.0/bin
 
-# Activate your environment if needed
-source activate llava  # or 'conda activate llava'
+# Activate conda environment
+source activate llava
 
-# Install Bits and Bytes
-pip install bitsandbytes-cuda118  # Adjust the command based on the needed CUDA version
+# Install CUDA toolkit via conda
+conda install -c conda-forge cudatoolkit=11.8 -y
 
-echo "Installation of Bits and Bytes completed."
+# Install bitsandbytes
+pip install bitsandbytes-cuda118
+
+# Verify bitsandbytes installation
+wget https://gist.githubusercontent.com/TimDettmers/1f5188c6ee6ed69d211b7fe4e381e713/raw/4d17c3d09ccdb57e9ab7eca0171f2ace6e4d2858/check_bnb_install.py
+python check_bnb_install.py
+
+echo "Bits and Bytes installation and verification completed."
