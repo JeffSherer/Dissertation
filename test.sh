@@ -23,8 +23,10 @@ source /opt/flight/etc/setup.sh
 flight env activate gridware
 module load libs/nvidia-cuda/11.8.0/bin
 
-# Activate conda environment
-source /opt/anaconda3/etc/profile.d/conda.sh
+# Correct path for conda.sh
+source /users/jjls2000/anaconda3/etc/profile.d/conda.sh
+
+# Activate the conda environment
 conda activate llava
 
 # Install CUDA toolkit via conda
