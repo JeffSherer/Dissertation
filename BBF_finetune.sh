@@ -48,16 +48,6 @@ fi
 # Set PYTHONPATH to include llava directory
 export PYTHONPATH=/users/jjls2000/sharedscratch/Dissertation:$PYTHONPATH
 
-# Check GPU availability and details
-nvidia-smi
-
-# Additional diagnostic commands
-echo "Running on node(s): $SLURM_JOB_NODELIST"
-echo "Using GPU device(s): $CUDA_VISIBLE_DEVICES"
-
-# Install necessary dependencies if not already installed
-pip install -r /users/jjls2000/sharedscratch/Dissertation/requirements.txt
-
 # Run the training script with deepspeed
 deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_enable True \
