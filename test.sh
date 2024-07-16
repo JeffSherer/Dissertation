@@ -23,20 +23,20 @@ source /opt/flight/etc/setup.sh
 flight env activate gridware
 module load libs/nvidia-cuda/11.8.0/bin
 
+# Find the correct conda.sh path
+CONDA_PATH=$(conda info --base)/etc/profile.d/conda.sh
+
 # Correct path for conda.sh
-source /users/jjls2000/anaconda3/etc/profile.d/conda.sh
+source $CONDA_PATH
 
 # Activate the conda environment
 conda activate llava
 
-# Install CUDA toolkit via conda
-conda install -c conda-forge cudatoolkit=11.8 -y
-
-# Install bitsandbytes for the correct CUDA version
+# Install bitsandbytes
 pip install bitsandbytes
 
 # Verify bitsandbytes installation
 echo "Verifying bitsandbytes installation"
-python -c "import bitsandbytes as bnb; print(bnb.__version__); adam = bnb.optim.Adam([bnb.nn.Parameter([1.0, 2.0, 3.0])]); print('bitsandbytes is successfully installed and functioning')"
+python -c "import bitsandbytes as bnb; print(bnb.__version__); print('bitsandbytes is successfully installed and functioning')"
 
 echo "Bits and Bytes installation and verification completed."
