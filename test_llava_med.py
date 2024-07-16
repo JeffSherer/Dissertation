@@ -1,8 +1,18 @@
-# check_cuda.py
-import torch
-print("CUDA available:", torch.cuda.is_available())
-if torch.cuda.is_available():
-    print("CUDA version:", torch.version.cuda)
-    print("Number of GPUs:", torch.cuda.device_count())
-    for i in range(torch.cuda.device_count()):
-        print(f"GPU {i}: {torch.cuda.get_device_name(i)}")
+# Save this as test_deepspeed.py
+import deepspeed
+
+def simple_model_engine():
+    class SimpleModel(torch.nn.Module):
+        def __init__(self):
+            super(SimpleModel, self).__init__()
+            self.linear = torch.nn.Linear(1, 1)
+
+        def forward(self, x):
+            return self.linear(x)
+
+    model = SimpleModel()
+    engine = deepspeed.initialize(model=model, model_parameters=model.parameters())[0]
+    print("Deepspeed engine is initialized.")
+
+if __name__ == "__main__":
+    simple_model_engine()
