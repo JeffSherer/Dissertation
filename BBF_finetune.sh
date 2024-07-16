@@ -23,6 +23,7 @@
 ################# Part-2 Shell script ####################
 # Activate Conda environment
 source /users/jjls2000/.bashrc
+conda init bash
 conda activate llava
 
 # Ensure CUDA paths are correct
@@ -39,6 +40,9 @@ nvidia-smi
 # Additional diagnostic commands
 echo "Running on node(s): $SLURM_JOB_NODELIST"
 echo "Using GPU device(s): $CUDA_VISIBLE_DEVICES"
+
+# Install required packages if not already installed
+pip install pydantic
 
 # Run the training script with deepspeed
 deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
@@ -80,3 +84,4 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --dataloader_num_workers 4 \
     --lazy_preprocess True \
     --report_to wandb
+
