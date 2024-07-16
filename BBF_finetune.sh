@@ -21,7 +21,8 @@
 #SBATCH -p gpu
 
 ################# Part-2 Shell script ####################
-# Ensure Conda is initialized
+# Load Anaconda and initialize the shell
+module load apps/anaconda3/2023.03/bin
 source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/bin/etc/profile.d/conda.sh
 
 # Activate Conda environment
@@ -42,7 +43,7 @@ nvidia-smi
 echo "Running on node(s): $SLURM_JOB_NODELIST"
 echo "Using GPU device(s): $CUDA_VISIBLE_DEVICES"
 
-# Install required packages if not already installed
+# Ensure pydantic is installed
 pip install pydantic
 
 # Run the training script with deepspeed
