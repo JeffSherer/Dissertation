@@ -55,7 +55,7 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_alpha 256 \
     --mm_projector_lr 2e-5 \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero3.json \
-    --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/Slake1.0-9epoch_delta \
+    --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b \
     --version llava_v1.5 \
     --data_path /users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented/BBF_train.json \
     --image_folder /users/jjls2000/sharedscratch/Dissertation/data/imgs-1 \
