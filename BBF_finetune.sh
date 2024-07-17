@@ -20,6 +20,8 @@
 #SBATCH -p gpu
 
 ################# Part-2 Shell script ####################
+# Add DeepSpeed to PATH
+export PATH=/users/jjls2000/.conda/envs/llava/bin:$PATH
 
 # Run the training script with deepspeed
 deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
