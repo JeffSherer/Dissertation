@@ -24,11 +24,15 @@
 source /users/jjls2000/.bashrc
 conda activate llava
 
+
 # Correct CUDA paths
 CUDA_PATH=/opt/gridware/depots/761a7df9/el7/pkg/libs/nvidia-cuda/11.8.0
 export CUDA_HOME=$CUDA_PATH
-export PATH=$CUDA_HOME/bin:$PATH
+export PATH=$CUDA_HOME/bin/bin:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:/users/jjls2000/.local/lib/python3.10/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
+
+# Set PYTHONPATH to include llava directory
+export PYTHONPATH=/users/jjls2000/sharedscratch/Dissertation:$PYTHONPATH
 
 # Set PYTHONPATH to include llava directory
 export PYTHONPATH=/users/jjls2000/sharedscratch/Dissertation:$PYTHONPATH
