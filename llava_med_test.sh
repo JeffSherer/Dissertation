@@ -21,25 +21,14 @@
 #SBATCH -p gpu
 
 ################# Part-2 Shell script ####################
-# Activate Gridware environment
-source /opt/gridware/depots/761a7df9/el9/pkg/el8/bin/activate
-
 # Activate Conda environment
 source /users/jjls2000/.bashrc
 conda activate llava
 
-# Ensure CUDA paths are correct
-export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0
-export PATH=$CUDA_HOME/bin/bin:$PATH
-export LD_LIBRARY_PATH=$CUDA_HOME/lib64:/users/jjls2000/.local/lib/python3.10/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
-
-# Verify nvcc exists
-if [ -f "$CUDA_HOME/bin/bin/nvcc" ]; then
-    echo "nvcc found at $CUDA_HOME/bin/bin/nvcc"
-else
-    echo "nvcc not found in $CUDA_HOME/bin/bin"
-    exit 1
-fi
+# Set CUDA paths directly
+export CUDA_HOME=/opt/gridware/depots/761a7df9/el9/pkg/libs/nvidia-cuda/11.8.0/bin/bin
+export PATH=$CUDA_HOME:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/../lib64:/users/jjls2000/.local/lib/python3.10/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH
 
 # Set PYTHONPATH to include llava directory
 export PYTHONPATH=/users/jjls2000/sharedscratch/Dissertation:$PYTHONPATH
@@ -58,7 +47,7 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --lora_alpha 256 \
     --mm_projector_lr 2e-5 \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero3.json \
-    --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-v1.5-7b \
+    --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-med-v1.5-mistral-7b \
     --version llava_v1.5 \
     --data_path /users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented/BBF_train.json \
     --image_folder /users/jjls2000/sharedscratch/Dissertation/data/imgs-1 \
