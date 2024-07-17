@@ -21,6 +21,9 @@
 #SBATCH -p gpu
 
 ################# Part-2 Shell script ####################
+# Activate Gridware environment
+source /opt/gridware/depots/761a7df9/el9/pkg/el8/bin/activate
+
 # Activate Conda environment
 source /users/jjls2000/.bashrc
 conda activate llava
