@@ -826,7 +826,7 @@ def train(attn_implementation=None):
         else:
             from llava.model.builder import load_pretrained_model
             tokenizer, model, image_processor, context_len = load_pretrained_model(
-                    model_path='<path_to_downloaded_repository(this)>',
+                    model_path='/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-med-v1.5-mistral-7b',
                     model_base=None,
                     model_name='llava-med-v1.5-mistral-7b'
             )
