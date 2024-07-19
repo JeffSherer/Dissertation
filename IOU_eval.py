@@ -1,32 +1,55 @@
 import json
 import torch
+import math
+from typing import Union
 
-# Configure paths for loading data
-PREDICTIONS_PATH = '/users/jjls2000/sharedscratch/Dissertation/results/llava_med_eval_answers.jsonl'
-GROUND_TRUTH_PATH = '/users/jjls2000/sharedscratch/Dissertation/data/eval/llava_med_eval_qa50_qa.jsonl'
-
+# Box-related classes and functions
 class Boxes:
-    def __init__(self, boxes):
-        self.boxes = boxes
+    def __init__(self, tensor: torch.Tensor) -> None:
+        device = tensor.device if isinstance(tensor, torch.Tensor) else torch.device("cpu")
+        tensor = torch.as_tensor(tensor, dtype=torch.float32, device=device)
+        if tensor.numel() == 0:
+            tensor = tensor.reshape((-1, 4)).to(dtype=torch.float32, device=device)
+        if tensor.dim() != 2 and tensor.size(-1) != 4:
+            raise AssertionError(f"Tensor shape is incorrect. Current shape is {tensor.size()}")
+        self.tensor = tensor
 
-    def area(self):
-        x1, y1, x2, y2 = self.boxes.T
-        return (x2 - x1) * (y2 - y1)
+    def area(self) -> torch.Tensor:
+        box = self.tensor
+        width_difference = box[:, 2] - box[:, 0]
+        height_difference = box[:, 3] - box[:, 1]
+        area = width_difference * height_difference
+        return area
 
-def matched_pairwise_iou(boxes1, boxes2):
-    x1, y1, x2, y2 = boxes1.boxes.T
-    x1g, y1g, x2g, y2g = boxes2.boxes.T
+    def __getitem__(self, index: Union[int, slice, torch.BoolTensor]) -> "Boxes":
+        if isinstance(index, int):
+            return Boxes(self.tensor[index].view(1, -1))
+        box = self.tensor[index]
+        if box.dim() != 2:
+            raise AssertionError(f"Indexing on Boxes with {index} failed to return a matrix!")
+        return Boxes(box)
 
-    xA = torch.max(x1, x1g)
-    yA = torch.max(y1, y1g)
-    xB = torch.min(x2, x2g)
-    yB = torch.min(y2, y2g)
+    def __len__(self) -> int:
+        return self.tensor.shape[0]
 
-    interArea = (xB - xA).clamp(0) * (yB - yA).clamp(0)
-    boxAArea = boxes1.area()
-    boxBArea = boxes2.area()
+    def clone(self) -> "Boxes":
+        return Boxes(self.tensor.clone())
 
-    iou = interArea / (boxAArea + boxBArea - interArea)
+    def to(self, device: torch.device) -> "Boxes":
+        return Boxes(self.tensor.to(device=device))
+
+
+def matched_pairwise_iou(boxes1: Boxes, boxes2: Boxes) -> torch.Tensor:
+    if len(boxes1) != len(boxes2):
+        raise AssertionError(f"boxlists should have the same number of entries, got {len(boxes1)} and {len(boxes2)}")
+    area1 = boxes1.area()
+    area2 = boxes2.area()
+    box1, box2 = boxes1.tensor, boxes2.tensor
+    lt = torch.max(box1[:, :2], box2[:, :2])
+    rb = torch.min(box1[:, 2:], box2[:, 2:])
+    wh = (rb - lt).clamp(min=0)
+    inter = wh[:, 0] * wh[:, 1]
+    iou = inter / (area1 + area2 - inter)
     return iou
 
 class RefCOCOAccuracy:
@@ -51,33 +74,31 @@ class RefCOCOAccuracy:
 def load_predictions(predictions_path):
     with open(predictions_path, 'r') as f:
         predictions = json.load(f)
-    # Example format adjustment, modify as needed
     return torch.tensor(predictions['boxes'])
 
 def load_ground_truth(ground_truth_path):
     with open(ground_truth_path, 'r') as f:
         ground_truth = json.load(f)
-    # Example format adjustment, modify as needed
     return {
         'visual_token_ids': torch.tensor(ground_truth['visual_token_ids']),
         'object_coordinates': torch.tensor(ground_truth['object_coordinates']),
         'raw_target': torch.tensor(ground_truth['raw_target'])
     }
 
-def evaluate():
-    predicted_boxes = load_predictions(PREDICTIONS_PATH)
-    ground_truth_data = load_ground_truth(GROUND_TRUTH_PATH)
-
+def evaluate(predictions_path, ground_truth_path):
+    predicted_boxes = load_predictions(predictions_path)
+    ground_truth_data = load_ground_truth(ground_truth_path)
     batch = {
         'visual_token_ids': ground_truth_data['visual_token_ids'],
         'object_coordinates': ground_truth_data['object_coordinates'],
         'raw_target': ground_truth_data['raw_target']
     }
-
     accuracy_metric = RefCOCOAccuracy(threshold=0.5)
     accuracy_metric.update(predicted_boxes, batch)
     accuracy = accuracy_metric.compute()
     print(f'IoU-based Accuracy: {accuracy * 100:.2f}%')
 
 if __name__ == "__main__":
-    evaluate()
+    predictions_path = '/users/jjls2000/sharedscratch/Dissertation/results/llava_med_eval_answers.jsonl'
+    ground_truth_path = '/users/jjls2000/sharedscratch/Dissertation/data/eval/llava_med_eval_qa50_qa.jsonl'
+    evaluate(predictions_path, ground_truth_path)
