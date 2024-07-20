@@ -6,9 +6,9 @@
 #SBATCH -e /users/jjls2000/sharedscratch/Dissertation/job-%j.error
 #SBATCH -J evaluation-job
 #SBATCH --time=02:00:00
-#SBATCH --mem=2048
+#SBATCH --mem=256G
 #SBATCH --partition=gpu
-#SBATCH --gres=gpu:2  # Requesting 2 GPUs to meet QOSMinGRES
+#SBATCH --gres=gpu:2  # Requesting 2 GPUs
 
 source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/etc/profile.d/conda.sh
 conda activate llava-med
