@@ -8,6 +8,7 @@
 #SBATCH --time=02:00:00
 #SBATCH --mem=2048
 #SBATCH --partition=gpu
+#SBATCH --gres=gpu:2  # Requesting 2 GPUs to meet QOSMinGRES
 
 source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/etc/profile.d/conda.sh
 conda activate llava-med
