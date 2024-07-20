@@ -11,9 +11,9 @@
 ## Job name
 #SBATCH -J evaluation-job
 ## Run time: "hours:minutes:seconds"
-#SBATCH --time=02:00:00
+#SBATCH --time=01:00:00
 ## Memory limit (in gigabytes)
-#SBATCH --mem=32G
+#SBATCH --mem=16G
 ## GPU requirements
 #SBATCH --gres=gpu:1  # Requesting 1 GPU
 ## Specify partition
