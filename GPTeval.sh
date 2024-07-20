@@ -13,9 +13,9 @@
 ## Run time: "hours:minutes:seconds"
 #SBATCH --time=02:00:00
 ## Memory limit (in gigabytes)
-#SBATCH --mem=256G
+#SBATCH --mem=32G
 ## GPU requirements
-#SBATCH --gres=gpu:2  # Requesting 2 GPUs
+#SBATCH --gres=gpu:1  # Requesting 1 GPU
 ## Specify partition
 #SBATCH --partition=gpu
 
