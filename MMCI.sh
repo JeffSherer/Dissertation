@@ -23,12 +23,12 @@
 #---------------------------
 echo "Starting evaluation job"
 
+# Set the OpenAI API key
+export OPENAI_API_KEY="your-openai-api-key"
+
 # Activate the conda environment
 source /opt/gridware/depots/761a7df9/el9/pkg/apps/anaconda3/2023.03/bin/etc/profile.d/conda.sh
 conda activate llava-med
-
-# Install the specific version of openai library
-pip install openai==0.28
 
 # Run the Python script
 python /users/jjls2000/sharedscratch/Dissertation/llava/eval/eval_multimodal_chat_gpt_score.py \
