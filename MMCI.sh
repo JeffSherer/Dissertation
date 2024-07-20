@@ -6,8 +6,8 @@
 ## Environment variables
 #SBATCH --export=ALL
 ## Output and Error Files
-#SBATCH -o job-%j.output
-#SBATCH -e job-%j.error
+#SBATCH -o /users/jjls2000/sharedscratch/Dissertation/llava/eval/job-%j.output
+#SBATCH -e /users/jjls2000/sharedscratch/Dissertation/llava/eval/job-%j.error
 ## Job name
 #SBATCH -J eval-multimodal-chat-gpt
 ## Run time: "hours:minutes:seconds"
@@ -23,7 +23,7 @@
 #---------------------------
 echo "Starting evaluation job"
 
-python eval_multimodal_chat_gpt_score.py \
+python /users/jjls2000/sharedscratch/Dissertation/eval_multimodal_chat_gpt_score.py \
     --answers-file /users/jjls2000/sharedscratch/Dissertation/results/llava_med_eval_answers.jsonl \
     --question-file /users/jjls2000/sharedscratch/Dissertation/data/eval/llava_med_eval_qa50_qa.jsonl \
     --scores-file /users/jjls2000/sharedscratch/Dissertation/results/eval_scores.jsonl
