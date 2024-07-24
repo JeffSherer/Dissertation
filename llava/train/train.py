@@ -824,11 +824,12 @@ def train(attn_implementation=None):
                 **bnb_model_from_pretrained_args
             )
         else:
-            from llava.model.builder import load_pretrained_model
-            tokenizer, model, image_processor, context_len = load_pretrained_model(
-                    model_path='/users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-med-v1.5-mistral-7b',
-                    model_base=None,
-                    model_name='llava-med-v1.5-mistral-7b'
+            model = LlavaLlamaForCausalLM.from_pretrained(
+                model_args.model_name_or_path,
+                cache_dir=training_args.cache_dir,
+                attn_implementation=attn_implementation,
+                torch_dtype=(torch.bfloat16 if training_args.bf16 else None),
+                **bnb_model_from_pretrained_args
             )
     else:
         model = transformers.LlamaForCausalLM.from_pretrained(
