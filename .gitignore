@@ -1,0 +1,32 @@
+# Ignore all error and output logs
+*.err
+*.out
+
+# Ignore other non-essential files
+.DS_Store
+llava-med-test-*z
+
+# Ignore job output and error files
+job-*.output
+job-*.error
+# Ignore large files
+*.tar.gz
+*.zip
+*.tar
+*.rar
+*.7z
+*.iso
+
+# Ignore specific directories
+checkpoints/
+processed_jsons/
+wandb/
+# Ignore large files
+.git/objects/pack/tmp_pack_*
+.git/objects/pack/pack-a00d1144facf525e27e1c8378c9e1818c12d7278.pack
+results/*/adapter_model.safetensors
+results/BBF-NoMod/adapter_model.bin
+checkpoints/llava-med-v1.5-mistral-7b/model-*.safetensors
+checkpoints/llava-v1.5-7b/pytorch_model-*.bin
+data/pmc/PMC6484696.tar.gz
+data/pmc/PMC6484696/mmc2.mp4
