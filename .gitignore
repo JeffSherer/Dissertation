@@ -1,7 +1,0 @@
-# Ignore all error and output logs
-*.err
-*.out
-
-# Ignore other non-essential files
-.DS_Store
-llava-med-test-*
