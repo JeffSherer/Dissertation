@@ -1,6 +1,3 @@
-[submodule "LLaVA"]
-	path = LLaVA
-	url = https://github.com/haotian-liu/LLaVA.git
 [submodule "bitsandbytes"]
 	path = bitsandbytes
 	url = https://github.com/TimDettmers/bitsandbytes.git
