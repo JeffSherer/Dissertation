@@ -1,60 +1,61 @@
-import json
-import os
-from collections import defaultdict
-
-import numpy as np
-
 import argparse
+from collections import defaultdict
+import pandas as pd
+import json
+import util  # Ensure util.py is available in the same directory or in the PYTHONPATH
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='ChatGPT-based QA evaluation.')
-    parser.add_argument('-d', '--dir', default=None)
-    parser.add_argument('-v', '--version', default=None)
-    parser.add_argument('-s', '--select', nargs='*', default=None)
-    parser.add_argument('-f', '--files', nargs='*', default=[])
-    parser.add_argument('-i', '--ignore', nargs='*', default=[])
-    return parser.parse_args()
+# Function to get the domain of the question
+def get_domain(x):
+    for domain in ['chest_xray', 'mri', 'histology', 'gross', 'ct_scan']:
+        if domain in x:  # Check if the domain is present
+            return domain
+    return 'unknown'
 
+# Main function to process the scores file
+def main(args):
+    scores_data = util.load_file_jsonl(args.scores_file)
+    predictions = []
+    
+    # Collect entries and check for missing keys
+    for i, x in enumerate(scores_data):
+        try:
+            question_id = x.get('question_id', f"default_id_{i}")
+            question_type = x.get('type', 'unknown')
+            domain = get_domain(x)
+            gpt_eval = x['gpt_eval'].split('\n')[0].split(' ')
+            predictions.append((question_id, question_type, domain, gpt_eval))
+        except KeyError as e:
+            print(f"Missing key {e} in entry {i}: {x}")
+            continue  # Skip entries with missing keys
+    
+    if not predictions:
+        print("No valid predictions found. Exiting.")
+        return
 
+    score_type_dict = defaultdict(lambda: defaultdict(list))
+    for q_id, q_type, domain, (a1_score, a2_score) in predictions:
+        score_type_dict[q_type][1].append(a1_score)
+        score_type_dict[q_type][2].append(a2_score)
+        score_type_dict['overall'][1].append(a1_score)
+        score_type_dict['overall'][2].append(a2_score)
+        if domain:  # Ensure domain is not None
+            score_type_dict[domain][1].append(a1_score)
+            score_type_dict[domain][2].append(a2_score)
+
+    result = defaultdict(dict)
+
+    for q_type, score_dict in score_type_dict.items():
+        result[q_type]['gpt4_score'] = util.get_avg(score_dict[1])
+        result[q_type]['pred_score'] = util.get_avg(score_dict[2])
+        result[q_type]['pred_relative_score'] = util.get_avg([float(s2)/float(s1) for s1, s2 in zip(score_dict[1], score_dict[2])]) * 100
+        result[q_type]['data_size'] = len(score_dict[1])
+
+    df = pd.DataFrame.from_dict(result, orient='index').filter(['gpt4_score', 'pred_score', 'pred_relative_score', 'data_size'])
+    print(df)
+
+# Entry point of the script
 if __name__ == '__main__':
-    args = parse_args()
-
-    if args.ignore is not None:
-        args.ignore = [int(x) for x in args.ignore]
-
-    if len(args.files) > 0:
-        review_files = args.files
-    else:
-        review_files = [x for x in os.listdir(args.dir) if x.endswith('.jsonl') and (x.startswith('gpt4_text') or x.startswith('reviews_') or x.startswith('review_') or 'review' in args.dir)]
-
-    for review_file in sorted(review_files):
-        config = os.path.basename(review_file).replace('gpt4_text_', '').replace('.jsonl', '')
-        if args.select is not None and any(x not in config for x in args.select):
-            continue
-        if '0613' in config:
-            version = '0613'
-        else:
-            version = '0314'
-        if args.version is not None and args.version != version:
-            continue
-        scores = defaultdict(list)
-        print(config)
-        with open(os.path.join(args.dir, review_file) if args.dir is not None else review_file) as f:
-            for review_str in f:
-                review = json.loads(review_str)
-                if review['question_id'] in args.ignore:
-                    continue
-                if 'category' in review:
-                    scores[review['category']].append(review['tuple'])
-                    scores['all'].append(review['tuple'])
-                else:
-                    if 'tuple' in review:
-                        scores['all'].append(review['tuple'])
-                    else:
-                        scores['all'].append(review['score'])
-        for k, v in sorted(scores.items()):
-            stats = np.asarray(v).mean(0).tolist()
-            stats = [round(x, 3) for x in stats]
-            # print(k, stats, round(stats[1]/stats[0]*100, 1))
-            print(k, round(stats[1]/stats[0]*100, 1), round(stats[0] * 10, 1), round(stats[1] * 10, 1))
-        print('=================================')
+    parser = argparse.ArgumentParser("GPT-4 Multimodal Chat Eval Postprocessing", add_help=True)
+    parser.add_argument("--scores-file", default="", metavar="FILE", help="input path to gpt-4 score file")
+    args = parser.parse_args()
+    main(args)
