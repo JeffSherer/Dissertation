@@ -1,0 +1,6 @@
+[
+    {"question": "What imaging technique was used?", "expected_answer": "X-ray"},
+    {"question": "What is the treatment for this condition?", "expected_answer": "Surgery"},
+    {"question": "Describe the findings in this image.", "expected_answer": "Fracture of the tibia"},
+    {"question": "What is the diagnosis based on this scan?", "expected_answer": "Pneumonia"}
+]

@@ -32,7 +32,7 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --deepspeed /users/jjls2000/sharedscratch/Dissertation/scripts/zero3.json \
     --model_name_or_path /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-med-v1.5-mistral-7b \
     --version llava_v1.5 \
-    --data_path /users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented/BBL_train.json \
+    --data_path /users/jjls2000/sharedscratch/Dissertation/Slake1.0/augmented_filtered/BBL_train_medium.json \
     --image_folder /users/jjls2000/sharedscratch/Dissertation/data/imgs-1 \
     --vision_tower openai/clip-vit-large-patch14-336 \
     --mm_projector_type mlp2x_gelu \
@@ -42,7 +42,7 @@ deepspeed /users/jjls2000/sharedscratch/Dissertation/llava/train/train_mem.py \
     --image_aspect_ratio pad \
     --group_by_modality_length True \
     --bf16 True \
-    --output_dir /users/jjls2000/sharedscratch/Dissertation/results/20240709_214950 \
+    --output_dir /users/jjls2000/sharedscratch/Dissertation/checkpoints/llava-med-v1.5-mistral-7b-BBL-3-fixed \
     --num_train_epochs 1 \
     --per_device_train_batch_size 8 \
     --per_device_eval_batch_size 4 \
